@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faCloudMoon } from '@fortawesome/free-solid-svg-icons';
 
 import Header from './header';
-import '../css/layout.css';
+import Footer from './footer';
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,6 +29,7 @@ const Switch = styled.div`
   flex-direction: column;
   align-items: center;
   position: fixed;
+  z-index: 100;
   top: 50%;
   right: 20px;
   transform: translateY(-50%);
@@ -102,9 +103,11 @@ const Layout = ({ children, noHeader }) => {
         <FontAwesomeIcon icon={faCloudMoon} className="moon" />
       </Switch>
 
-      {!noHeader && <Header />}
+      <Header />
 
       <Main>{children}</Main>
+
+      <Footer />
     </Wrapper>
   );
 };

@@ -13,20 +13,18 @@ import Img from 'gatsby-image';
  * - `useStaticQuery`: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-// const Image = () => {
-//   const data = useStaticQuery(graphql`
-//     query {
-//       placeholderImage: file(relativePath: { eq: "gatsby-astronaut.png" }) {
-//         childImageSharp {
-//           fluid(maxWidth: 300) {
-//             ...GatsbyImageSharpFluid
-//           }
-//         }
-//       }
-//     }
-//   `);
+export const IconGatsby = () => {
+  const data = useStaticQuery(graphql`
+    query {
+      iconGatsby: file(relativePath: { eq: "images/icon-gatsby.png" }) {
+        childImageSharp {
+          fixed(width: 24, height: 24) {
+            ...GatsbyImageSharpFixed_withWebp
+          }
+        }
+      }
+    }
+  `);
 
-//   return <Img fluid={data.placeholderImage.childImageSharp.fluid} />;
-// };
-
-// export default Image;
+  return <Img fixed={data.iconGatsby.childImageSharp.fixed} />;
+};
