@@ -34,6 +34,14 @@ const Switch = styled.div`
   right: 20px;
   transform: translateY(-50%);
 
+  @media (max-width: 767px) {
+    position: static;
+    transform: translateY(0);
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px 0 0;
+  }
+
   button {
     position: relative;
     margin: 10px 0;
@@ -45,6 +53,12 @@ const Switch = styled.div`
     outline: none;
     cursor: pointer;
     background: transparent;
+
+    @media (max-width: 767px) {
+      width: 40px;
+      height: 16px;
+      margin: 0 10px;
+    }
   }
 
   button:after {
@@ -57,6 +71,11 @@ const Switch = styled.div`
     height: 10px;
     border-radius: 50%;
     background: ${({ mode }) => (mode === 'light' ? '#f9d71c' : '#f5f3ce')};
+
+    @media (max-width: 767px) {
+      left: ${({ mode }) => (mode === 'light' ? '2px' : 'auto')};
+      right: ${({ mode }) => (mode === 'light' ? 'auto' : '2px')};
+    }
   }
 
   .sun {

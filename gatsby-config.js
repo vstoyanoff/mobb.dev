@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   siteMetadata: {
     title: `Mobb Dev`,
@@ -21,10 +23,10 @@ module.exports = {
         name: `mobb.dev`,
         short_name: `mobb.dev`,
         start_url: `/`,
-        background_color: `#000`,
-        theme_color: `#fff`,
+        background_color: `#333`,
+        theme_color: `#f5f3ce`,
         display: `minimal-ui`,
-        // icon: ``, // This path is relative to the root of the site.
+        icon: `src/images/favicon.png`, // This path is relative to the root of the site.
       },
     },
     {
@@ -34,6 +36,41 @@ module.exports = {
           {
             family: `Titillium Web`,
             variants: [`400`, `500`, `700`],
+          },
+          {
+            family: `Inconsolata`,
+            variants: [`400`, `700`],
+          },
+        ],
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-firebase',
+      options: {
+        features: {
+          auth: true,
+          database: true,
+          firestore: false,
+          storage: false,
+          messaging: false,
+          functions: true,
+          performance: false,
+        },
+      },
+    },
+    {
+      resolve: `gatsby-source-firebase`,
+      options: {
+        // point to the firebase private key downloaded
+        credential: require('./firebase-key.json'),
+
+        // your firebase database root url
+        databaseURL: 'https://mobbdev-d5831.firebaseio.com/',
+
+        types: [
+          {
+            type: 'Articles',
+            path: 'articles',
           },
         ],
       },

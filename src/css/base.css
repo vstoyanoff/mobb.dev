@@ -631,8 +631,8 @@ pre tt:after {
   }
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 767px) {
   .shell {
-    padding: 15px 70px;
+    padding: 15px 25px;
   }
 }

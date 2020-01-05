@@ -8,7 +8,7 @@
  * * https://www.npmjs.com/package/js-base64
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Editor,
@@ -17,6 +17,7 @@ import {
   convertToRaw,
   convertFromRaw,
   getDefaultKeyBinding,
+  CompositeDecorator,
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import ReactHtmlParser from 'react-html-parser';
@@ -27,6 +28,7 @@ import 'draft-js/dist/Draft.css';
 const StyledRichText = styled.div`
   position: relative;
   border: 2px solid #333;
+  margin-bottom: 20px;
 
   .dark-mode & {
     border: 2px solid #f5f3ce;
@@ -52,6 +54,7 @@ const StyledButton = styled.button`
   transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
   transform: ${({ active }) => (active ? `scale(1.3)` : `scale(1)`)};
   font-weight: ${({ active }) => (active ? '700' : '500')};
+  cursor: pointer;
 
   .dark-mode & {
     background: #f5f3ce;
@@ -66,20 +69,79 @@ const StyledButton = styled.button`
     `}
 `;
 
-const StyledEditor = styled.div`
-  min-height: 300px;
-  padding: 0 10px;
+const StyledInput = styled.input`
+  width: 100%;
+  background-color: transparent;
+  border: 2px solid #333;
+  padding: 5px 10px;
+  color: #333;
+  outline: none;
+  font-size: 14px;
+
+  .dark-mode & {
+    border-color: #f5f3ce;
+    color: #f5f3ce;
+  }
 `;
+
+const StyledUrl = styled.div`
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledEditor = styled.div`
+  height: 60vh;
+  overflow: scroll;
+  padding: 0 10px;
+
+  div[data-contents] > div {
+    margin-bottom: 1.45rem;
+  }
+`;
+
+const findLinkEntities = (contentBlock, callback, contentState) => {
+  contentBlock.findEntityRanges(character => {
+    const entityKey = character.getEntity();
+    return (
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() === 'LINK'
+    );
+  }, callback);
+};
+
+const Link = props => {
+  const { url } = props.contentState.getEntity(props.entityKey).getData();
+  return <a href={url}>{props.children}</a>;
+};
 
 /**
  * Rich text field
  */
 const RichTextField = props => {
+  const decorator = new CompositeDecorator([
+    {
+      strategy: findLinkEntities,
+      component: Link,
+    },
+  ]);
+
   /**
    * State
    */
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(
+    EditorState.createEmpty(decorator)
+  );
+  const [link, setLink] = useState({
+    showInput: false,
+    url: '',
+  });
   const { data } = props;
+
+  /**
+   * Refs
+   */
+  const urlInputRef = useRef(null);
 
   /**
    * Hooks
@@ -88,9 +150,15 @@ const RichTextField = props => {
     if (data.length) {
       const decodedContent = Base64.decode(data);
       const contentState = convertFromRaw(JSON.parse(decodedContent));
-      setEditorState(EditorState.createWithContent(contentState));
+      setEditorState(EditorState.createWithContent(contentState, decorator));
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (link.showInput) {
+      urlInputRef.current.focus();
+    }
+  }, [link]);
 
   /**
    * Methods
@@ -140,6 +208,73 @@ const RichTextField = props => {
     }
   };
 
+  const promptForLink = e => {
+    e.preventDefault();
+
+    if (link.showInput) {
+      setLink({
+        showInput: false,
+        url: '',
+      });
+
+      return;
+    }
+
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      const contentState = editorState.getCurrentContent();
+      const startKey = editorState.getSelection().getStartKey();
+      const startOffset = editorState.getSelection().getStartOffset();
+      const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+      const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
+
+      let url = '';
+      if (linkKey) {
+        const linkInstance = contentState.getEntity(linkKey);
+        url = linkInstance.getData().url;
+      }
+
+      setLink({
+        showInput: true,
+        url: url,
+      });
+    }
+  };
+
+  const confirmLink = e => {
+    e.preventDefault();
+
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'LINK',
+      'MUTABLE',
+      { url: link.url }
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {
+      currentContent: contentStateWithEntity,
+    });
+
+    setEditorState(
+      RichUtils.toggleLink(
+        newEditorState,
+        newEditorState.getSelection(),
+        entityKey
+      )
+    );
+    setLink({
+      showInput: false,
+      url: '',
+    });
+  };
+
+  const removeLink = () => {
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      setEditorState(RichUtils.toggleLink(editorState, selection, null));
+    }
+  };
+
   /**
    * Options
    */
@@ -156,7 +291,7 @@ const RichTextField = props => {
     { label: 'Code Block', style: 'code-block' },
   ];
 
-  var INLINE_STYLES = [
+  const INLINE_STYLES = [
     { label: 'Bold', style: 'BOLD' },
     { label: 'Italic', style: 'ITALIC' },
     { label: 'Underline', style: 'UNDERLINE' },
@@ -229,23 +364,56 @@ const RichTextField = props => {
     );
   };
 
+  const MediaControls = () => {
+    return (
+      <div style={{ marginTop: 20 }}>
+        <StyledButton onMouseDown={promptForLink}>Link</StyledButton>
+
+        <StyledButton>Media</StyledButton>
+      </div>
+    );
+  };
+
+  const LinkInput = () => {
+    return (
+      <StyledUrl>
+        <StyledInput
+          ref={urlInputRef}
+          type="url"
+          value={link.url}
+          onChange={e => setLink({ showInput: true, url: e.target.value })}
+        />
+
+        <StyledButton small onMouseDown={confirmLink}>
+          Add
+        </StyledButton>
+
+        <StyledButton small onMouseDown={removeLink} disabled={!link.url}>
+          Remove
+        </StyledButton>
+      </StyledUrl>
+    );
+  };
+
   /**
    * Render
    */
   return (
     <StyledRichText>
       <StyledControls>
-        <div>
-          <BlockStyleControls
-            editorState={editorState}
-            onToggle={toggleBlockType}
-          />
+        <BlockStyleControls
+          editorState={editorState}
+          onToggle={toggleBlockType}
+        />
 
-          <InlineStyleControls
-            editorState={editorState}
-            onToggle={toggleInlineStyle}
-          />
-        </div>
+        <InlineStyleControls
+          editorState={editorState}
+          onToggle={toggleInlineStyle}
+        />
+
+        <MediaControls editorState={editorState} />
+
+        {link.showInput && <LinkInput />}
       </StyledControls>
 
       <StyledEditor>

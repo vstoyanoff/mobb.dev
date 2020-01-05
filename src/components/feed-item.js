@@ -6,6 +6,11 @@ const StyledItem = styled.article`
   display: flex;
   position: relative;
   align-items: center;
+  margin-bottom: 50px;
+
+  @media (max-width: 767px) {
+    display: block;
+  }
 
   a {
     text-decoration: none;
@@ -16,36 +21,40 @@ const StyledItem = styled.article`
   }
 
   .feed-item-image {
+    display: block;
     width: 35%;
-    height: 100%;
-    margin-right: 2%;
+    margin-right: 3%;
+
+    @media (max-width: 767px) {
+      width: 100%;
+      margin-right: 0;
+    }
   }
 
   img {
+    display: block;
     object-fit: cover;
     object-position: center;
-    width: 100%;
-    border: 2px solid #333;
-    margin-bottom: 0;
-
-    .dark-mode & {
-      border-color: #f5f3ce;
-    }
+    margin: 0 auto;
 
     &:hover {
-      opacity: 0.6;
+      opacity: 0.8;
     }
   }
 
   div {
     width: 63%;
     padding: 20px 0;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
   }
 `;
 
 const FeedItem = ({ data }) => (
   <StyledItem>
-    {data.image !== 'No Image' &&
+    {data.image &&
       (data.type === 'external' ? (
         <a
           className="feed-item-image"
@@ -56,16 +65,26 @@ const FeedItem = ({ data }) => (
           <img src={data.image} alt={data.title} />
         </a>
       ) : (
-        <Link to={data.url}>
+        <Link to={`/${data.url}`} className="feed-item-image">
           <img src={data.image} alt={data.title} />
         </Link>
       ))}
 
     <div>
+      {data.featured && (
+        <p style={{ fontFamily: 'Inconsolata' }}>
+          <em>FEATURED</em>
+        </p>
+      )}
+
       <h3>
-        <a target="_blank" rel="noopener noreferrer" href={data.url}>
-          {data.title}
-        </a>
+        {data.type === 'external' ? (
+          <a target="_blank" rel="noopener noreferrer" href={data.url}>
+            {data.title}
+          </a>
+        ) : (
+          <Link to={`/${data.url}`}>{data.title}</Link>
+        )}
       </h3>
 
       {data.site && (
