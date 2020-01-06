@@ -52,13 +52,17 @@ const Switch = styled.div`
     position: relative;
     margin: 10px 0;
     border: 1px solid transparent;
-    border-color: ${({ mode }) => (mode === 'light' ? '#f9d71c' : '#f5f3ce')};
+    border-color: #f9d71c;
     height: 40px;
     width: 16px;
     border-radius: 50px;
     outline: none;
     cursor: pointer;
     background: transparent;
+
+    .dark-mode & {
+      border-color: #f5f3ce;
+    }
 
     @media (max-width: 767px) {
       width: 40px;
@@ -70,17 +74,28 @@ const Switch = styled.div`
   button:after {
     content: '';
     position: absolute;
-    top: ${({ mode }) => (mode === 'light' ? '2px' : 'auto')};
-    bottom: ${({ mode }) => (mode === 'light' ? 'auto' : '2px')};
+    top: 2px;
+    bottom: auto;
     left: 2px;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: ${({ mode }) => (mode === 'light' ? '#f9d71c' : '#f5f3ce')};
+    background: #f9d71c;
+
+    .dark-mode & {
+      top: auto;
+      bottom: 2px;
+      background: #f5f3ce;
+    }
 
     @media (max-width: 767px) {
-      left: ${({ mode }) => (mode === 'light' ? '2px' : 'auto')};
-      right: ${({ mode }) => (mode === 'light' ? 'auto' : '2px')};
+      left: 2px;
+      right: auto;
+
+      .dark-mode & {
+        left: auto;
+        right: 2px;
+      }
     }
   }
 
@@ -90,8 +105,12 @@ const Switch = styled.div`
   }
 
   .moon {
-    color: ${({ mode }) => (mode === 'light' ? '#1f263b' : '#f5f3ce')};
+    color: #1f263b;
     font-size: 24px;
+
+    .dark-mode & {
+      color: #f5f3ce;
+    }
   }
 `;
 
