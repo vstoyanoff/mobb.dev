@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Layout from '../components/layout';
 import RichText from '../components/rich-text';
+import SEO from '../components/seo';
 
 const Header = styled.header`
   margin-bottom: 30px;
@@ -31,6 +32,12 @@ const Article = ({ data }) => {
 
   return (
     <Layout>
+      <SEO
+        title={data.articles.title}
+        image={data.articles.image}
+        description={data.articles.description}
+      />
+
       <section>
         <div className="shell">
           <Header>
