@@ -3,8 +3,8 @@ require('dotenv').config();
 module.exports = {
   siteMetadata: {
     title: `Mobb Dev`,
-    description: ``,
-    author: `@vesst`,
+    description: `Check out my personal library for interesting dev related articles. Hope you like it!`,
+    author: `@mobbdev`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
