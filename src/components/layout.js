@@ -45,7 +45,7 @@ const Switch = styled.div`
     transform: translateY(0);
     flex-direction: row;
     justify-content: center;
-    margin: 20px 0 0;
+    margin: 20px 0 10px;
   }
 
   button {
@@ -150,8 +150,6 @@ const Layout = ({ children }) => {
 
   return (
     <Wrapper>
-      <Header />
-
       <Switch mode={mode}>
         <FontAwesomeIcon icon={faSun} className="sun" />
 
@@ -159,6 +157,8 @@ const Layout = ({ children }) => {
 
         <FontAwesomeIcon icon={faCloudMoon} className="moon" />
       </Switch>
+
+      <Header />
 
       <Main>{children}</Main>
 

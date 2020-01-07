@@ -42,6 +42,11 @@ const StyledButton = styled.button`
   margin-right: 10px;
   margin-bottom: 20px;
 
+  @media (max-width: 576px) {
+    display: block;
+    width: 100%;
+  }
+
   ${({ active }) =>
     active &&
     css`
@@ -98,6 +103,7 @@ const StyledActions = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
 
   button {
     min-width: 100px;
@@ -105,6 +111,14 @@ const StyledActions = styled.div`
 
   button + button {
     margin-left: 10px;
+  }
+
+  @media (max-width: 576px) {
+    display: block;
+
+    button + button {
+      margin-left: 0;
+    }
   }
 `;
 
@@ -245,6 +259,14 @@ const Cms = () => {
     }
   };
 
+  const handleDeploy = () => {
+    setLoading(true);
+    fetch('https://api.netlify.com/build_hooks/5e1325748f25809185cb13d5', {
+      method: 'POST',
+      body: {},
+    }).then(res => setLoading(false));
+  };
+
   return (
     <Layout>
       {loading && <LoadingOverlay />}
@@ -263,15 +285,17 @@ const Cms = () => {
                 active={mode === 'add'}
                 onClick={() => setMode('add')}
               >
-                Add
+                Add New
               </StyledButton>
 
               <StyledButton
                 active={mode === 'edit'}
                 onClick={() => setMode('edit')}
               >
-                Edit
+                Edit existing
               </StyledButton>
+
+              <StyledButton onClick={handleDeploy}>Deploy changes</StyledButton>
 
               <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
             </StyledActions>
