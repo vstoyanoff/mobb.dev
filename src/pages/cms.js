@@ -148,16 +148,24 @@ const Cms = () => {
    * Hooks
    */
   useFirebase(firebase => {
-    firebase.auth().onAuthStateChanged(user => setAuth(!!user));
-    firebase
-      .database()
-      .ref('/articles')
-      .once('value')
-      .then(data => {
-        const articles = Object.values(data.val());
-        const filtered = articles.filter(article => article.state === 'draft');
-        setDrafts(filtered);
-      });
+    setLoading(true);
+    firebase.auth().onAuthStateChanged(user => {
+      setAuth(!!user);
+      setLoading(false);
+    });
+    if (auth) {
+      firebase
+        .database()
+        .ref('/articles')
+        .once('value')
+        .then(data => {
+          const articles = Object.values(data.val());
+          const filtered = articles.filter(
+            article => article.state === 'draft'
+          );
+          setDrafts(filtered);
+        });
+    }
   }, []);
 
   /**
@@ -175,10 +183,14 @@ const Cms = () => {
   };
 
   const handleSignOut = () => {
+    setLoading(true);
     firebase
       .auth()
       .signOut()
-      .then(() => setAuth(false))
+      .then(() => {
+        setAuth(false);
+        setLoading(false);
+      })
       .catch(e => console.log(e));
   };
 
@@ -274,7 +286,7 @@ const Cms = () => {
       {!auth ? (
         <section>
           <div className="shell">
-            <Form auth={handleAuth} />
+            <Form auth={handleAuth} setLoading={setLoading} />
           </div>
         </section>
       ) : (

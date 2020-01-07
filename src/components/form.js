@@ -70,6 +70,7 @@ const Form = props => {
    */
   const formSubmit = event => {
     event.preventDefault();
+    props.setLoading(true);
     props.auth({
       email: emailRef.current.value,
       pass: passRef.current.value,
