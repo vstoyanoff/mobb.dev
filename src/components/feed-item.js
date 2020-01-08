@@ -8,6 +8,10 @@ const StyledItem = styled.article`
   align-items: center;
   margin-bottom: 50px;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   @media (max-width: 767px) {
     display: block;
   }
