@@ -62,7 +62,7 @@ module.exports = {
       resolve: `gatsby-source-firebase`,
       options: {
         // point to the firebase private key downloaded
-        credential: require('./firebase-key.json'),
+        credential: process.env.FIREBASE_API_KEY,
 
         // your firebase database root url
         databaseURL: 'https://mobbdev-d5831.firebaseio.com/',
