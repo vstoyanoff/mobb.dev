@@ -152,20 +152,21 @@ const Cms = () => {
     firebase.auth().onAuthStateChanged(user => {
       setAuth(!!user);
       setLoading(false);
+
+      if (!!user) {
+        firebase
+          .database()
+          .ref('/articles')
+          .once('value')
+          .then(data => {
+            const articles = Object.values(data.val());
+            const filtered = articles.filter(
+              article => article.state === 'draft'
+            );
+            setDrafts(filtered);
+          });
+      }
     });
-    if (auth) {
-      firebase
-        .database()
-        .ref('/articles')
-        .once('value')
-        .then(data => {
-          const articles = Object.values(data.val());
-          const filtered = articles.filter(
-            article => article.state === 'draft'
-          );
-          setDrafts(filtered);
-        });
-    }
   }, []);
 
   /**
