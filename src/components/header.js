@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import {
+  faLinkedin,
+  faTwitter,
+  faGithub,
+} from '@fortawesome/free-brands-svg-icons';
 
 const StyledHeader = styled.header`
   text-align: center;
@@ -40,6 +44,14 @@ const Header = () => {
             href="https://twitter.com/mobbdev"
           >
             <FontAwesomeIcon icon={faTwitter} size="sm" />
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/mobbdev/"
+          >
+            <FontAwesomeIcon icon={faGithub} size="sm" />
           </a>
         </h2>
       </div>
