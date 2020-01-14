@@ -22,6 +22,7 @@ const StyledHero = styled.section`
 const IndexPage = () => (
   <Layout>
     <SEO title="My tiny blog" />
+
     <StyledHero>
       <div className="shell">
         <p>

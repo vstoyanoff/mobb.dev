@@ -26,6 +26,7 @@
     "gatsby-source-filesystem": "^2.1.40",
     "gatsby-source-firebase": "^1.0.0",
     "gatsby-transformer-sharp": "^2.3.7",
+    "highlight.js": "^9.17.1",
     "js-base64": "^2.5.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",

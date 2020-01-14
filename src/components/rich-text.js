@@ -208,6 +208,14 @@ const RichTextField = props => {
     }
   };
 
+  const handleReturn = e => {
+    if (e.shiftKey) {
+      setEditorState(RichUtils.insertSoftNewline(editorState));
+      return 'handled';
+    }
+    return 'not-handled';
+  };
+
   const promptForLink = e => {
     e.preventDefault();
 
@@ -418,6 +426,7 @@ const RichTextField = props => {
 
       <StyledEditor>
         <Editor
+          handleReturn={handleReturn}
           blockStyleFn={getBlockStyle}
           editorState={editorState}
           handleKeyCommand={handleKeyCommand}
