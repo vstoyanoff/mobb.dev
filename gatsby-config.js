@@ -65,7 +65,7 @@ module.exports = {
         credential: JSON.parse(process.env.FIREBASE_API_KEY),
 
         // your firebase database root url
-        databaseURL: 'https://mobbdev-d5831.firebaseio.com/',
+        databaseURL: process.env.GATSBY_FIREBASE_DATABASE_URL,
 
         types: [
           {
