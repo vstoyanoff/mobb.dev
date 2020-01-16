@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'gatsby';
 
 import Layout from '../components/layout';
 import Feed from '../components/feed';
@@ -34,6 +35,12 @@ const IndexPage = () => (
           <br />
           If you wanna know more about me take a look at my social media
           profiles above.
+          <br />
+          And if you have opportunities for me, or just want to say{' '}
+          <em>
+            <b>Hi!</b>
+          </em>{' '}
+          <Link to="/contact">contact</Link> me :)
           <br />
           Cheers!
         </p>

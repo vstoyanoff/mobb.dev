@@ -26,6 +26,10 @@ export const StyledTextarea = styled.textarea`
   height: 150px;
   resize: none;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   .dark-mode & {
     border-color: #f5f3ce;
     color: #f5f3ce;
@@ -44,6 +48,10 @@ export const StyledSelect = styled.select`
   .dark-mode & {
     border-color: #f5f3ce;
     color: #f5f3ce;
+
+    option {
+      color: #f5f3ce;
+    }
   }
 `;
 
