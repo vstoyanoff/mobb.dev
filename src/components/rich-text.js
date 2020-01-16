@@ -24,6 +24,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { Base64 } from 'js-base64';
 import styled, { css } from 'styled-components';
 import 'draft-js/dist/Draft.css';
+import { StyledInput } from '../css/styled';
 
 const StyledRichText = styled.div`
   position: relative;
@@ -67,21 +68,6 @@ const StyledButton = styled.button`
     css`
       font-size: 12px;
     `}
-`;
-
-const StyledInput = styled.input`
-  width: 100%;
-  background-color: transparent;
-  border: 2px solid #333;
-  padding: 5px 10px;
-  color: #333;
-  outline: none;
-  font-size: 14px;
-
-  .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
-  }
 `;
 
 const StyledUrl = styled.div`

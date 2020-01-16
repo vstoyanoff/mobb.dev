@@ -1,40 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import RichText from '../components/rich-text';
 import Dropzone from '../components/dropzone';
 
-const StyledInput = styled.input`
-  width: 100%;
-  background-color: transparent;
-  border: 2px solid #333;
-  padding: 10px;
-  margin-bottom: 10px;
-  color: #333;
-  outline: none;
-
-  .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
-  }
-`;
-
-const StyledTextarea = styled.textarea`
-  width: 100%;
-  background-color: transparent;
-  border: 2px solid #333;
-  padding: 10px;
-  margin-bottom: 10px;
-  color: #333;
-  outline: none;
-  height: 150px;
-  resize: none;
-
-  .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
-  }
-`;
+import { StyledInput, StyledTextarea } from '../css/styled';
 
 const Authored = props => {
   const handleTitle = event => {

@@ -8,6 +8,8 @@ import LoadingOverlay from '../components/loading-overlay';
 import Authored from '../components/authored';
 import External from '../components/external';
 
+import { StyledButton, StyledSelect } from '../css/styled';
+
 const StyledFields = styled.fieldset`
   border: none;
   padding: 0 0 10px;
@@ -26,76 +28,6 @@ const StyledFields = styled.fieldset`
   span {
     display: inline-block;
     vertical-align: middle;
-  }
-`;
-
-const StyledButton = styled.button`
-  background: transparent;
-  border: 2px solid #333;
-  color: #333;
-  padding: 8px 20px;
-  text-transform: uppercase;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  font-size: 14px;
-  margin-right: 10px;
-  margin-bottom: 20px;
-
-  @media (max-width: 576px) {
-    display: block;
-    width: 100%;
-  }
-
-  ${({ active }) =>
-    active &&
-    css`
-      color: #f5f3ce !important;
-      background-color: #333 !important;
-
-      .dark-mode & {
-        color: #333 !important;
-        background-color: #f5f3ce !important;
-      }
-    `}
-
-  &:disabled {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  &:hover:disabled {
-    cursor: not-allowed;
-  }
-
-  &:hover {
-    background: #333;
-    color: #f5f3ce;
-  }
-
-  .dark-mode & {
-    color: #f5f3ce;
-    border-color: #f5f3ce;
-
-    &:hover {
-      background: #f5f3ce;
-      color: #333;
-    }
-  }
-`;
-
-const StyledSelect = styled.select`
-  width: 100%;
-  background-color: transparent;
-  border: 2px solid #333;
-  padding: 10px;
-  margin-right: 20px;
-  color: #333;
-  outline: none;
-
-  .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
   }
 `;
 
