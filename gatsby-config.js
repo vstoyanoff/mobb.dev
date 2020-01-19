@@ -3,8 +3,9 @@ require('dotenv').config();
 module.exports = {
   siteMetadata: {
     title: `Mobb Dev`,
-    description: `Check out my personal library for interesting dev related articles. Hope you like it!`,
+    description: `Tiny blog with dev related articles from different sources like Medium, freeCodeCamp, Smashing Magazine, etc. Also you will find authored articles about different JavaScript related topics. Hope you like it!`,
     author: `@mobbdev`,
+    siteUrl: `https://mobb.dev`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -45,7 +46,7 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-firebase',
+      resolve: `gatsby-plugin-firebase`,
       options: {
         features: {
           auth: true,
@@ -77,9 +78,9 @@ module.exports = {
     },
     `gatsby-plugin-netlify`,
     `gatsby-plugin-netlify-cache`,
+    `gatsby-plugin-sitemap`,
     `gatsby-plugin-styled-components`,
-    // this (optional) plugin enables Progressive Web App + Offline functionality
-    // To learn more, visit: https://gatsby.dev/offline
-    // `gatsby-plugin-offline`,
+    `gatsby-plugin-robots-txt`,
+    `gatsby-plugin-offline`,
   ],
 };

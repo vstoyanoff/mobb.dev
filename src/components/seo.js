@@ -9,7 +9,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { useStaticQuery, graphql } from 'gatsby';
-import siteImage from '../images/favicon.png';
 
 function SEO({ description, lang, meta, title, image }) {
   const { site } = useStaticQuery(
@@ -27,7 +26,7 @@ function SEO({ description, lang, meta, title, image }) {
   );
 
   const metaDescription = description || site.siteMetadata.description;
-  const metaImage = image || siteImage;
+  const metaImage = image || 'https://mobb.dev/icons/icon-512x512.png';
 
   return (
     <Helmet
