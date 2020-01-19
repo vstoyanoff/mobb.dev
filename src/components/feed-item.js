@@ -1,4 +1,5 @@
 import React from 'react';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 
@@ -60,14 +61,14 @@ const FeedItem = ({ data }) => (
   <StyledItem>
     {data.image &&
       (data.type === 'external' ? (
-        <a
+        <OutboundLink
           className="feed-item-image"
           target="_blank"
           rel="noopener noreferrer"
           href={data.url}
         >
           <img src={data.image} alt={data.title} />
-        </a>
+        </OutboundLink>
       ) : (
         <Link to={`/${data.url}`} className="feed-item-image">
           <img src={data.image} alt={data.title} />
@@ -83,9 +84,13 @@ const FeedItem = ({ data }) => (
 
       <h3>
         {data.type === 'external' ? (
-          <a target="_blank" rel="noopener noreferrer" href={data.url}>
+          <OutboundLink
+            target="_blank"
+            rel="noopener noreferrer"
+            href={data.url}
+          >
             {data.title}
-          </a>
+          </OutboundLink>
         ) : (
           <Link to={`/${data.url}`}>{data.title}</Link>
         )}
@@ -95,13 +100,13 @@ const FeedItem = ({ data }) => (
         <h4 style={{ fontWeight: 500 }}>
           Published in:{' '}
           <strong>
-            <a
+            <OutboundLink
               target="_blank"
               rel="noopener noreferrer"
               href={`https://www.google.com/search?q=${data.site}`}
             >
               {data.site}
-            </a>
+            </OutboundLink>
           </strong>
         </h4>
       )}

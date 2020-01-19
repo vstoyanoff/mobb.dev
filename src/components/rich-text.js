@@ -23,6 +23,7 @@ import { stateToHTML } from 'draft-js-export-html';
 import ReactHtmlParser from 'react-html-parser';
 import { Base64 } from 'js-base64';
 import styled, { css } from 'styled-components';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import 'draft-js/dist/Draft.css';
 import { StyledInput } from '../css/styled';
 
@@ -98,7 +99,11 @@ const findLinkEntities = (contentBlock, callback, contentState) => {
 
 const Link = props => {
   const { url } = props.contentState.getEntity(props.entityKey).getData();
-  return <a href={url}>{props.children}</a>;
+  return (
+    <OutboundLink target="_blank" rel="noopener noreferrer" href={url}>
+      {props.children}
+    </OutboundLink>
+  );
 };
 
 /**

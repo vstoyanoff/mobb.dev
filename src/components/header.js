@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLinkedin,
@@ -30,29 +31,29 @@ const Header = () => {
         </h1>
 
         <h2>
-          <a
+          <OutboundLink
             target="_blank"
             rel="noopener noreferrer"
             href="https://www.linkedin.com/in/veselin-stoyanov-20382b47/"
           >
             <FontAwesomeIcon icon={faLinkedin} size="sm" />
-          </a>
+          </OutboundLink>
           &nbsp;&nbsp;&nbsp;
-          <a
+          <OutboundLink
             target="_blank"
             rel="noopener noreferrer"
             href="https://twitter.com/mobbdev"
           >
             <FontAwesomeIcon icon={faTwitter} size="sm" />
-          </a>
+          </OutboundLink>
           &nbsp;&nbsp;&nbsp;
-          <a
+          <OutboundLink
             target="_blank"
             rel="noopener noreferrer"
             href="https://github.com/mobbdev/"
           >
             <FontAwesomeIcon icon={faGithub} size="sm" />
-          </a>
+          </OutboundLink>
         </h2>
       </div>
     </StyledHeader>

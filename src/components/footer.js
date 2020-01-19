@@ -1,4 +1,5 @@
 import React from 'react';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import styled from 'styled-components';
 
 import { IconGatsby } from './images';
@@ -31,13 +32,13 @@ const Footer = () => (
   <StyledFooter>
     <div className="shell">
       <p>Powered by</p>
-      <a
+      <OutboundLink
         target="_blank"
         rel="noopener noreferrer"
         href="https://www.gatsbyjs.org/"
       >
         <IconGatsby />
-      </a>
+      </OutboundLink>
     </div>
   </StyledFooter>
 );
