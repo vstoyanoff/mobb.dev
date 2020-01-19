@@ -128,10 +128,18 @@ const ContactPage = () => {
 
   return (
     <Layout>
-      <SEO title="Contact me" />
+      <SEO
+        title="Contact me"
+        description="If you have opportunities for me or you want to say Hi! just use this form and will get back to you right away."
+      />
 
       <section>
         <div className="shell">
+          <h1 style={{ fontSize: 24 }}>
+            If you have opportunities for me or you want to say <em>Hi!</em>{' '}
+            just use this form and will get back to you right away.
+          </h1>
+
           {success && (
             <StyledSuccessMessage>
               Yay! Thank you! <br /> I'll get back to you soon.

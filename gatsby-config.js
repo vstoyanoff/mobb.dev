@@ -2,8 +2,8 @@ require('dotenv').config();
 
 module.exports = {
   siteMetadata: {
-    title: `Mobb Dev`,
-    description: `Tiny blog with dev related articles from different sources like Medium, freeCodeCamp, Smashing Magazine, etc. Also you will find authored articles about different JavaScript related topics. Hope you like it!`,
+    title: `Programming articles collection`,
+    description: `Tiny blog with programming related articles from different sources like Medium, freeCodeCamp, Smashing Magazine, etc. You will also find authored articles about JavaScript trending topics. Hope you like it!`,
     author: `@mobbdev`,
     siteUrl: `https://mobb.dev`,
   },
