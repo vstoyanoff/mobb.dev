@@ -110,7 +110,7 @@ const Feed = () => {
 
   const filters = React.useMemo(
     () => Array.from(new Set(articles.map(article => article.node.site))),
-    [data.allArticles]
+    [articles]
   );
 
   /**
