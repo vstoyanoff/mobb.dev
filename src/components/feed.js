@@ -122,7 +122,9 @@ const Feed = () => {
   const handleFilter = e => {
     const val = e.target.value;
     if (val !== 'All') {
-      setArticles([...data.allArticles.edges].filter(a => a.node.site === val));
+      setArticles(
+        [...data.allArticles.edges].reverse().filter(a => a.node.site === val)
+      );
     } else {
       setArticles(
         [...data.allArticles.edges]
