@@ -13,8 +13,8 @@ import Img from 'gatsby-image';
  * - `useStaticQuery`: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-export const IconGatsby = () => {
-  const data = useStaticQuery(graphql`
+const useImages = () => {
+  const query = useStaticQuery(graphql`
     query {
       iconGatsby: file(relativePath: { eq: "images/icon-gatsby.png" }) {
         childImageSharp {
@@ -23,8 +23,42 @@ export const IconGatsby = () => {
           }
         }
       }
+      logoWebpack: file(relativePath: { eq: "images/logo-webpack.png" }) {
+        childImageSharp {
+          fluid {
+            ...GatsbyImageSharpFluid_withWebp
+          }
+        }
+      }
+      logoWebpackWhite: file(
+        relativePath: { eq: "images/logo-webpack-white.png" }
+      ) {
+        childImageSharp {
+          fluid {
+            ...GatsbyImageSharpFluid_withWebp
+          }
+        }
+      }
     }
   `);
 
-  return <Img fixed={data.iconGatsby.childImageSharp.fixed} />;
+  return query;
+};
+
+export const IconGatsby = () => {
+  const { iconGatsby } = useImages();
+
+  return <Img fixed={iconGatsby.childImageSharp.fixed} />;
+};
+
+export const WebpackLogo = props => {
+  const { logoWebpack } = useImages();
+
+  return <Img {...props} fluid={logoWebpack.childImageSharp.fluid} />;
+};
+
+export const WebpackLogoWhite = props => {
+  const { logoWebpackWhite } = useImages();
+
+  return <Img {...props} fluid={logoWebpackWhite.childImageSharp.fluid} />;
 };

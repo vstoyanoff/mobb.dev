@@ -28,9 +28,7 @@ function SEO({ description, lang, meta, title, image }) {
 
   const metaDescription = description || site.siteMetadata.description;
   const metaImage = image || 'https://mobb.dev/icons/icon-512x512.png';
-  const metaTitle = title
-    ? `${title} | ${site.siteMetadata.title}`
-    : site.siteMetadata.title;
+  const metaTitle = title || site.siteMetadata.title;
 
   return (
     <Helmet
