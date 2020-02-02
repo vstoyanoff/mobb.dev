@@ -23,6 +23,13 @@ const useImages = () => {
           }
         }
       }
+      iconMobbDev: file(relativePath: { eq: "images/favicon.png" }) {
+        childImageSharp {
+          fixed(width: 48, height: 48) {
+            ...GatsbyImageSharpFixed_withWebp
+          }
+        }
+      }
       logoWebpack: file(relativePath: { eq: "images/logo-webpack.png" }) {
         childImageSharp {
           fluid {
@@ -49,6 +56,12 @@ export const IconGatsby = () => {
   const { iconGatsby } = useImages();
 
   return <Img fixed={iconGatsby.childImageSharp.fixed} />;
+};
+
+export const IconMobbDev = () => {
+  const { iconMobbDev } = useImages();
+
+  return <Img fixed={iconMobbDev.childImageSharp.fixed} />;
 };
 
 export const WebpackLogo = props => {

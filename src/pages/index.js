@@ -34,7 +34,7 @@ const IndexPage = () => (
           some interesting topic once a week, so bear with me.
           <br />
           If you wanna know more about me take a look at my social media
-          profiles above.
+          profiles.
           <br />
           And if you have opportunities for me, or just want to say{' '}
           <em>

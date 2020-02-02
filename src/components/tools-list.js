@@ -17,6 +17,8 @@ const tools = [
 const StyledList = styled.ul`
   padding-left: 0;
   list-style-type: none;
+  margin-left: 0;
+  margin-bottom: 0;
 `;
 
 const StyledListItem = styled.li`
@@ -26,6 +28,7 @@ const StyledListItem = styled.li`
 
   .image-wrapper,
   article {
+    display: block;
     width: 50%;
   }
 
@@ -52,6 +55,19 @@ const StyledListItem = styled.li`
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+
+    .image-wrapper,
+    article {
+      width: 100%;
+    }
+
+    .image-wrapper {
+      margin-bottom: 20px;
     }
   }
 `;
