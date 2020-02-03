@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
+import Recaptcha from 'react-google-recaptcha';
 
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
@@ -79,6 +80,8 @@ const WebpackConfigGenerator = () => {
     purgeCss: false,
   });
 
+  const recaptchaRef = useRef(null);
+
   const handleInput = e => {
     if (e.target.type !== 'number') {
       if (!/\w/g.test(e.target.value[e.target.value.length - 1])) {
@@ -106,6 +109,11 @@ const WebpackConfigGenerator = () => {
     });
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    console.log('form', JSON.stringify(state));
+  };
+
   return (
     <Layout>
       <SEO
@@ -122,8 +130,8 @@ const WebpackConfigGenerator = () => {
           </h3>
 
           <h4>
-            The default configuration comes bundled only with JS processing and
-            optimizations for best performance. There will be{' '}
+            The default configuration comes bundled only with JS processing,
+            transpiling and optimization for best performance. There will be{' '}
             <code>static</code> folder and everything from there will be copied
             to the end dist folder as-is. But you really can do much more with
             webpack. <em>Customize</em> it below to fit your needs.
@@ -134,7 +142,7 @@ const WebpackConfigGenerator = () => {
       <section>
         <div className="shell">
           <StyledGenerator>
-            <form>
+            <form onSubmit={handleSubmit}>
               <fieldset>
                 <label htmlFor="entry-name">
                   Entry name{' '}
@@ -150,6 +158,7 @@ const WebpackConfigGenerator = () => {
                   type="text"
                   name="jsEntry"
                   id="entry-name"
+                  required
                 />
               </fieldset>
 
@@ -191,8 +200,9 @@ const WebpackConfigGenerator = () => {
                     <h4>
                       This option will process all .html files injecting .js and
                       .css bundles in each of them. You can extend further with
-                      HTML template language - Pug or PostHTML. You can find
-                      more information in the generated file in the end.
+                      HTML template language - Pug, PostHTML, or Handlebars. You
+                      can find more information in the README that will be
+                      provided.
                     </h4>
 
                     <StyledOptionsList>
@@ -386,40 +396,6 @@ const WebpackConfigGenerator = () => {
                       </StyledRadiobutton>
                     </StyledOptionsList>
 
-                    <p>How would you like to use CSS?</p>
-
-                    <StyledOptionsList>
-                      <StyledRadiobutton>
-                        <label htmlFor="vanilla-css">
-                          Use plain vanilla CSS. (@import will be utilized)
-                        </label>
-
-                        <input
-                          type="radio"
-                          id="vanilla-css"
-                          name="stylesType"
-                          value="css"
-                          checked={state.stylesType === 'css'}
-                          onChange={handleRadio}
-                        />
-                      </StyledRadiobutton>
-
-                      <br />
-
-                      <StyledRadiobutton>
-                        <label htmlFor="sass">Use SASS preprocessor.</label>
-
-                        <input
-                          type="radio"
-                          id="sass"
-                          name="stylesType"
-                          value="sass"
-                          checked={state.stylesType === 'sass'}
-                          onChange={handleRadio}
-                        />
-                      </StyledRadiobutton>
-                    </StyledOptionsList>
-
                     {state.stylesPreference === 'separate-files' && (
                       <>
                         <label htmlFor="styles-entry-name">
@@ -439,6 +415,43 @@ const WebpackConfigGenerator = () => {
                         />
                       </>
                     )}
+
+                    <br />
+
+                    <p>How would you like to use CSS?</p>
+
+                    <StyledOptionsList>
+                      <StyledRadiobutton>
+                        <label htmlFor="vanilla-css">
+                          Use plain vanilla CSS. (<code>@import</code>{' '}
+                          statements will be utilized)
+                        </label>
+
+                        <input
+                          type="radio"
+                          id="vanilla-css"
+                          name="stylesType"
+                          value="css"
+                          checked={state.stylesType === 'css'}
+                          onChange={handleRadio}
+                        />
+                      </StyledRadiobutton>
+
+                      <br />
+
+                      <StyledRadiobutton>
+                        <label htmlFor="scss">Use SCSS preprocessor.</label>
+
+                        <input
+                          type="radio"
+                          id="scss"
+                          name="stylesType"
+                          value="scss"
+                          checked={state.stylesType === 'scss'}
+                          onChange={handleRadio}
+                        />
+                      </StyledRadiobutton>
+                    </StyledOptionsList>
                   </div>
                 )}
               </fieldset>
@@ -665,6 +678,8 @@ const WebpackConfigGenerator = () => {
                         />
                       </StyledCheckbox>
 
+                      <br />
+
                       <StyledCheckbox>
                         <label htmlFor="purgeCss">
                           Remove unneccessary CSS. Useful when using CSS
@@ -723,6 +738,12 @@ const WebpackConfigGenerator = () => {
                   </div>
                 )}
               </fieldset>
+
+              <Recaptcha
+                style={{ marginBottom: 20 }}
+                ref={recaptchaRef}
+                sitekey={process.env.GATSBY_APP_SITE_RECAPTCHA_KEY}
+              />
 
               <StyledButton type="submit">
                 Get your webpack configuration
