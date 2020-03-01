@@ -15,6 +15,8 @@ import {
   StyledButton,
 } from '../../css/styled';
 
+const url = 'https://webpack-config-generator.herokuapp.com';
+
 const StyledGenerator = styled.div`
   padding: 30px;
   border: 2px solid #333;
@@ -126,20 +128,17 @@ const WebpackConfigGenerator = () => {
       const recaptchaValue = recaptchaRef.current.getValue();
 
       //Send generate request
-      const res = await fetch(
-        `${process.env.WEBPACK_CONFIG_GENERATOR_SERVER}/generate`,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            ...state,
-            id: nanoid(),
-            gResp: recaptchaValue,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const res = await fetch(`${url}/generate`, {
+        method: 'POST',
+        body: JSON.stringify({
+          ...state,
+          id: nanoid(),
+          gResp: recaptchaValue,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       const response = await res.json();
 
       if (response.error) {
@@ -149,23 +148,17 @@ const WebpackConfigGenerator = () => {
       }
 
       //Send request for generated files
-      const resFile = await fetch(
-        `${process.env.WEBPACK_CONFIG_GENERATOR_SERVER}/download?id=${response.id}`,
-        {
-          method: 'GET',
-        }
-      );
+      const resFile = await fetch(`${url}/download?id=${response.id}`, {
+        method: 'GET',
+      });
       const file = await resFile.blob();
       download(file, 'your_webpack_config.zip');
       setLoading(false);
 
       //Send remove request
-      await fetch(
-        `${process.env.WEBPACK_CONFIG_GENERATOR_SERVER}/remove?id=${response.id}`,
-        {
-          method: 'GET',
-        }
-      );
+      await fetch(`${url}/remove?id=${response.id}`, {
+        method: 'GET',
+      });
     } catch (err) {
       console.error(err);
     }
