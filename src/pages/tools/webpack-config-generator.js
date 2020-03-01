@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import Recaptcha from 'react-google-recaptcha';
+import nanoid from 'nanoid';
+import download from 'downloadjs';
 
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
@@ -60,6 +62,7 @@ const StyledOptionsList = styled.div`
 
 const WebpackConfigGenerator = () => {
   const [state, setState] = useState({
+    id: '',
     jsEntry: 'main',
     processHTML: 'no',
     htmlPreference: 'no',
@@ -109,9 +112,33 @@ const WebpackConfigGenerator = () => {
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log('form', JSON.stringify(state));
+    try {
+      //Send generate request
+      const res = await fetch('http://localhost:15015/generate', {
+        method: 'POST',
+        body: JSON.stringify({ ...state, id: nanoid() }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const { id } = await res.json();
+
+      //Send request for generated files
+      const resFile = await fetch(`http://localhost:15015/download?id=${id}`, {
+        method: 'GET',
+      });
+      const file = await resFile.blob();
+      download(file, 'your_webpack_config.zip');
+
+      //Send remove request
+      await fetch(`http://localhost:15015/remove?id=${id}`, {
+        method: 'GET',
+      });
+    } catch (err) {
+      console.log('err', err);
+    }
   };
 
   return (
@@ -503,37 +530,42 @@ const WebpackConfigGenerator = () => {
                     </h4>
 
                     <StyledOptionsList>
-                      <StyledCheckbox>
-                        <label htmlFor="url-resolve">
-                          Resolve images from <code>url()</code> in CSS
-                        </label>
-
-                        <input
-                          type="checkbox"
-                          id="url-resolve"
-                          name="imageUrlResolve"
-                          checked={state.imageUrlResolve}
-                          onChange={handleCheckbox}
-                        />
-                      </StyledCheckbox>
-
-                      <br />
-
-                      {state.imageUrlResolve && (
+                      {state.processStyles === 'yes' && (
                         <>
-                          <label htmlFor="resolve-size">
-                            You can use DataURL instead of loading separate
-                            file. Here you can specify under what size the image
-                            should be embeded as DataURL in CSS (in bytes)
-                          </label>
+                          <StyledCheckbox>
+                            <label htmlFor="url-resolve">
+                              Resolve images from <code>url()</code> in CSS
+                            </label>
 
-                          <StyledInput
-                            type="number"
-                            id="resolve-size"
-                            name="resolveSize"
-                            value={state.resolveSize}
-                            onChange={handleInput}
-                          />
+                            <input
+                              type="checkbox"
+                              id="url-resolve"
+                              name="imageUrlResolve"
+                              checked={state.imageUrlResolve}
+                              onChange={handleCheckbox}
+                            />
+                          </StyledCheckbox>
+
+                          <br />
+
+                          {state.imageUrlResolve && (
+                            <>
+                              <label htmlFor="resolve-size">
+                                You can use DataURL instead of loading separate
+                                file. Here you can specify under what size the
+                                image should be embeded as DataURL in CSS (in
+                                bytes)
+                              </label>
+
+                              <StyledInput
+                                type="number"
+                                id="resolve-size"
+                                name="resolveSize"
+                                value={state.resolveSize}
+                                onChange={handleInput}
+                              />
+                            </>
+                          )}
                         </>
                       )}
 
@@ -641,59 +673,69 @@ const WebpackConfigGenerator = () => {
 
                       <br />
 
-                      <StyledCheckbox>
-                        <label htmlFor="webp">
-                          Generate WebP assets from images.
-                        </label>
+                      {state.processImages === 'yes' && (
+                        <>
+                          <StyledCheckbox>
+                            <label htmlFor="webp">
+                              Generate WebP assets from images.
+                            </label>
 
-                        <input
-                          type="checkbox"
-                          id="webp"
-                          name="webp"
-                          checked={state.webp}
-                          onChange={handleCheckbox}
-                        />
-                      </StyledCheckbox>
+                            <input
+                              type="checkbox"
+                              id="webp"
+                              name="webp"
+                              checked={state.webp}
+                              onChange={handleCheckbox}
+                            />
+                          </StyledCheckbox>
 
-                      <br />
+                          <br />
+                        </>
+                      )}
 
-                      <StyledCheckbox>
-                        <label htmlFor="above-the-fold">
-                          Inline critical CSS in order to minimize{' '}
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href="https://vuejsdevelopers.com/2017/07/24/critical-css-webpack/"
-                          >
-                            render blocking
-                          </a>
-                        </label>
+                      {state.processHTML === 'yes' && (
+                        <>
+                          <StyledCheckbox>
+                            <label htmlFor="above-the-fold">
+                              Inline critical CSS in order to minimize{' '}
+                              <a
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="https://vuejsdevelopers.com/2017/07/24/critical-css-webpack/"
+                              >
+                                render blocking
+                              </a>
+                            </label>
 
-                        <input
-                          type="checkbox"
-                          id="above-the-fold"
-                          name="criticalCss"
-                          checked={state.criticalCss}
-                          onChange={handleCheckbox}
-                        />
-                      </StyledCheckbox>
+                            <input
+                              type="checkbox"
+                              id="above-the-fold"
+                              name="criticalCss"
+                              checked={state.criticalCss}
+                              onChange={handleCheckbox}
+                            />
+                          </StyledCheckbox>
 
-                      <br />
+                          <br />
+                        </>
+                      )}
 
-                      <StyledCheckbox>
-                        <label htmlFor="purgeCss">
-                          Remove unneccessary CSS. Useful when using CSS
-                          libraries like Bootstrap.
-                        </label>
+                      {state.processStyles === 'yes' && (
+                        <StyledCheckbox>
+                          <label htmlFor="purgeCss">
+                            Remove unneccessary CSS. Useful when using CSS
+                            libraries like Bootstrap.
+                          </label>
 
-                        <input
-                          type="checkbox"
-                          id="purgeCss"
-                          name="purgeCss"
-                          checked={state.purgeCss}
-                          onChange={handleCheckbox}
-                        />
-                      </StyledCheckbox>
+                          <input
+                            type="checkbox"
+                            id="purgeCss"
+                            name="purgeCss"
+                            checked={state.purgeCss}
+                            onChange={handleCheckbox}
+                          />
+                        </StyledCheckbox>
+                      )}
                     </StyledOptionsList>
                   </div>
                 )}
