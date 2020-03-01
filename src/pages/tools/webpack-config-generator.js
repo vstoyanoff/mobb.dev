@@ -5,6 +5,8 @@ import nanoid from 'nanoid';
 import download from 'downloadjs';
 
 import Layout from '../../components/layout';
+import LoadingOverlay from '../../components/loading-overlay';
+import ErrorOverlay from '../../components/error-overlay';
 import SEO from '../../components/seo';
 import {
   StyledInput,
@@ -82,6 +84,8 @@ const WebpackConfigGenerator = () => {
     criticalCss: false,
     purgeCss: false,
   });
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const recaptchaRef = useRef(null);
 
@@ -115,29 +119,55 @@ const WebpackConfigGenerator = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
+      setLoading(true);
+      setError(false);
+
+      //Get recaptcha response
+      const recaptchaValue = recaptchaRef.current.getValue();
+
       //Send generate request
-      const res = await fetch('http://localhost:15015/generate', {
-        method: 'POST',
-        body: JSON.stringify({ ...state, id: nanoid() }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const { id } = await res.json();
+      const res = await fetch(
+        `${process.env.WEBPACK_CONFIG_GENERATOR_SERVER}/generate`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            ...state,
+            id: nanoid(),
+            gResp: recaptchaValue,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const response = await res.json();
+
+      if (response.error) {
+        setError(response.error);
+        setLoading(false);
+        return false;
+      }
 
       //Send request for generated files
-      const resFile = await fetch(`http://localhost:15015/download?id=${id}`, {
-        method: 'GET',
-      });
+      const resFile = await fetch(
+        `${process.env.WEBPACK_CONFIG_GENERATOR_SERVER}/download?id=${response.id}`,
+        {
+          method: 'GET',
+        }
+      );
       const file = await resFile.blob();
       download(file, 'your_webpack_config.zip');
+      setLoading(false);
 
       //Send remove request
-      await fetch(`http://localhost:15015/remove?id=${id}`, {
-        method: 'GET',
-      });
+      await fetch(
+        `${process.env.WEBPACK_CONFIG_GENERATOR_SERVER}/remove?id=${response.id}`,
+        {
+          method: 'GET',
+        }
+      );
     } catch (err) {
-      console.log('err', err);
+      console.error(err);
     }
   };
 
@@ -170,6 +200,12 @@ const WebpackConfigGenerator = () => {
         <div className="shell">
           <StyledGenerator>
             <form onSubmit={handleSubmit}>
+              {error && (
+                <ErrorOverlay text={error} close={() => setError(false)} />
+              )}
+
+              {loading && <LoadingOverlay />}
+
               <fieldset>
                 <label htmlFor="entry-name">
                   Entry name{' '}
@@ -787,7 +823,7 @@ const WebpackConfigGenerator = () => {
                 sitekey={process.env.GATSBY_APP_SITE_RECAPTCHA_KEY}
               />
 
-              <StyledButton type="submit">
+              <StyledButton type="submit" disabled={loading}>
                 Get your webpack configuration
               </StyledButton>
             </form>
