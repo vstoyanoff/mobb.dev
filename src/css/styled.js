@@ -55,6 +55,149 @@ export const StyledSelect = styled.select`
   }
 `;
 
+export const StyledCheckbox = styled.div`
+  position: relative;
+  padding-left: 25px;
+  display: inline-block;
+  cursor: pointer;
+
+  label {
+    margin-bottom: 0 !important;
+    cursor: pointer;
+  }
+
+  input {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 0;
+    height: 0;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #333;
+      cursor: pointer;
+
+      .dark-mode & {
+        border-color: #f5f3ce;
+      }
+    }
+
+    &:after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 12px;
+      position: absolute;
+      top: 50%;
+      left: 7px;
+      margin-top: 2px;
+      border-right: 2px solid #f5f3ce;
+      border-bottom: 2px solid #f5f3ce;
+      transform: rotate(45deg);
+      opacity: 0;
+      visibility: hidden;
+
+      .dark-mode & {
+        border-color: #333;
+      }
+    }
+
+    &:checked {
+      &:before {
+        background-color: #333;
+
+        .dark-mode & {
+          background-color: #f5f3ce;
+        }
+      }
+
+      &:after {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+`;
+
+export const StyledRadiobutton = styled.div`
+  position: relative;
+  padding-left: 25px;
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 10px;
+
+  label {
+    margin-bottom: 0 !important;
+    cursor: pointer;
+  }
+
+  input {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 0;
+    height: 0;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #333;
+      cursor: pointer;
+      border-radius: 50%;
+
+      .dark-mode & {
+        border-color: #f5f3ce;
+      }
+    }
+
+    &:after {
+      content: '';
+      display: block;
+      width: 8px;
+      height: 8px;
+      position: absolute;
+      top: 50%;
+      left: 6px;
+      margin-top: 6px;
+      background-color: #f5f3ce;
+      opacity: 0;
+      visibility: hidden;
+      border-radius: 50%;
+
+      .dark-mode & {
+        background-color: #333;
+      }
+    }
+
+    &:checked {
+      &:before {
+        background-color: #333;
+
+        .dark-mode & {
+          background-color: #f5f3ce;
+        }
+      }
+
+      &:after {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+`;
+
 export const StyledButton = styled.button`
   background: transparent;
   border: 2px solid #333;

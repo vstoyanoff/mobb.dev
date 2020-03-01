@@ -8,16 +8,90 @@ import {
   faTwitter,
   faGithub,
 } from '@fortawesome/free-brands-svg-icons';
+import { IconMobbDev } from './images';
 
 const StyledHeader = styled.header`
   text-align: center;
 
+  .shell {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   h1 {
-    margin-bottom: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-family: 'Inconsolata', monospace;
+  }
+
+  h2 {
+    margin-bottom: 0;
+  }
+
+  .socials {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav {
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      margin-left: 0;
+    }
+
+    li {
+      font-size: 20px;
+      margin-bottom: 0;
+    }
 
     a {
       text-decoration: none;
+      font-weight: 600;
+    }
+  }
+
+  .image {
+    .dark-mode & {
+      filter: invert(100%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+
+    .image {
+      order: 1;
+    }
+
+    h1 {
+      display: none;
+    }
+
+    .shell {
+      flex-wrap: wrap;
+    }
+
+    .socials {
+      position: static;
+      flex-direction: row;
+      justify-content: center;
+      transform: translateY(0);
+      order: 2;
+    }
+
+    .nav {
+      order: 3;
     }
   }
 `;
@@ -26,11 +100,23 @@ const Header = () => {
   return (
     <StyledHeader>
       <div className="shell">
-        <h1>
-          <Link to="/">&#402;(m)(o)(b)(b).dev</Link>
-        </h1>
+        <div className="image">
+          <Link to="/">
+            <IconMobbDev />
+          </Link>
+        </div>
 
-        <h2>
+        <h1>&#402;(m)(o)(b)(b).dev</h1>
+
+        <nav className="nav">
+          <ul>
+            <li>
+              <Link to="/tools">Tools</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="socials">
           <OutboundLink
             target="_blank"
             rel="noopener noreferrer"
@@ -54,7 +140,7 @@ const Header = () => {
           >
             <FontAwesomeIcon icon={faGithub} size="sm" />
           </OutboundLink>
-        </h2>
+        </div>
       </div>
     </StyledHeader>
   );
