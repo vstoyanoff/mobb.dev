@@ -4,7 +4,7 @@
   "description": "Generate webpack config based on user preferences",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node webpack-config-generator.js"
   },
   "repository": {
     "type": "git",
