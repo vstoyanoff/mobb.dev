@@ -1,4 +1,4 @@
-const fetch = require('node-fetch').default;
+const fetch = require('node-fetch');
 const secret = '6Lfd2M8UAAAAAMacR_k94FxxpKG4ZBkGfbRinnJb';
 
 module.exports = async token => {

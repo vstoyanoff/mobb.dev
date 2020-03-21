@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 const fs = require('fs');
+const path = require('path');
 
 /**
  * External dependencies
@@ -17,29 +18,39 @@ module.exports = options => {
   return new Promise((resolve, reject) => {
     try {
       const folderName = `${options.id}`;
-      mkdirp.sync(`generated/${folderName}`);
-      mkdirp.sync(`generated/${folderName}/src`);
+      mkdirp.sync(path.resolve(__dirname, `../generated/${folderName}`));
+      mkdirp.sync(path.resolve(__dirname, `../generated/${folderName}/src`));
       generateConfig(options, folderName);
       generatePackageJson(options, folderName);
       generateHtmlFiles(options, folderName);
-      mkdirp.sync(`generated/${folderName}/src/js`);
+      mkdirp.sync(path.resolve(__dirname, `../generated/${folderName}/src/js`));
 
       fs.writeFileSync(
-        `generated/${folderName}/src/js/${options.jsEntry}.js`,
+        path.resolve(
+          __dirname,
+          `../generated/${folderName}/src/js/${options.jsEntry}.js`
+        ),
         ''
       );
       console.log(`${options.jsEntry}.js created successfully.`);
 
-      mkdirp.sync(`generated/${folderName}/src/static`);
+      mkdirp.sync(
+        path.resolve(__dirname, `../generated/${folderName}/src/static`)
+      );
       console.log(`Static folder created successfully.`);
 
       if (
         options.processStyles === 'yes' &&
         options.stylesPreference === 'separate-files'
       ) {
-        mkdirp.sync(`generated/${folderName}/src/styles`);
+        mkdirp.sync(
+          path.resolve(__dirname, `../generated/${folderName}/src/styles`)
+        );
         fs.writeFileSync(
-          `generated/${folderName}/src/styles/${options.stylesEntry}.${options.stylesType}`,
+          path.resolve(
+            __dirname,
+            `../generated/${folderName}/src/styles/${options.stylesEntry}.${options.stylesType}`
+          ),
           ''
         );
         console.log(
@@ -47,12 +58,14 @@ module.exports = options => {
         );
       }
 
-      const output = fs.createWriteStream(`generated/${folderName}.zip`);
+      const output = fs.createWriteStream(
+        path.resolve(__dirname, `../generated/${folderName}.zip`)
+      );
       const archive = archiver('zip');
 
       output.on('close', () => {
         console.log(archive.pointer() + ' total bytes');
-        rimraf.sync(`generated/${folderName}`);
+        rimraf.sync(path.resolve(__dirname, `../generated/${folderName}`));
 
         resolve(folderName);
       });
@@ -75,7 +88,10 @@ module.exports = options => {
       });
 
       archive.pipe(output);
-      archive.directory(`generated/${folderName}`, '');
+      archive.directory(
+        path.resolve(__dirname, `../generated/${folderName}`),
+        ''
+      );
       archive.finalize();
     } catch (err) {
       console.error(err);

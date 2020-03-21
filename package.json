@@ -43,7 +43,6 @@
     "react-google-recaptcha": "^2.0.1",
     "react-helmet": "^5.2.1",
     "react-html-parser": "^2.0.2",
-    "rimraf": "^3.0.2",
     "styled-components": "^4.4.1"
   },
   "devDependencies": {
@@ -62,7 +61,7 @@
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "postinstall": "node build-functions.js"
+    "postinstall": "netlify-lambda install"
   },
   "repository": {
     "type": "git",
