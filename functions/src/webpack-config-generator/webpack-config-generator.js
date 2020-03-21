@@ -1,18 +1,11 @@
 const express = require('express');
 const serverless = require('serverless-http');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const rimraf = require('rimraf');
 const generateFiles = require('./lib/generateFiles');
 const verifyRecaptcha = require('./lib/verifyRecaptcha.js');
 
-const app = express().use(
-  '*',
-  cors({
-    origin: 'https://mobb.dev',
-    optionsSuccessStatus: 200,
-  })
-);
+const app = express();
 
 app.get('/download', (req, res) => {
   const id = req.query.id;

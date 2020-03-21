@@ -15,7 +15,7 @@ import {
   StyledButton,
 } from '../../css/styled';
 
-const url = 'https://mobb.dev/.netlify/functions/webpack-config-generator';
+const url = '/.netlify/functions/webpack-config-generator';
 
 const StyledGenerator = styled.div`
   padding: 30px;
@@ -128,6 +128,7 @@ const WebpackConfigGenerator = () => {
       const recaptchaValue = recaptchaRef.current.getValue();
 
       //Send generate request
+      console.log('request');
       const res = await fetch(`${url}/generate`, {
         method: 'POST',
         body: JSON.stringify({
@@ -139,6 +140,7 @@ const WebpackConfigGenerator = () => {
           'Content-Type': 'application/json',
         },
       });
+      console.log('res:', res);
       const response = await res.json();
 
       if (response.error) {
