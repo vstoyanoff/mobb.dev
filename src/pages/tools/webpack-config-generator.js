@@ -15,7 +15,7 @@ import {
   StyledButton,
 } from '../../css/styled';
 
-const url = 'https://webpack-config-generator.herokuapp.com';
+const url = 'https://mobb.dev/.netlify/functions/webpack-config-generator';
 
 const StyledGenerator = styled.div`
   padding: 30px;
