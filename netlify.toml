@@ -1,4 +1,0 @@
-[build]
-  command = "echo GATSBY_APP_SITE_RECAPTCHA_KEY=$SITE_RECAPTCHA_KEY >> .env.production && gatsby build"
-  functions = "functions"
-  publish = "public"
