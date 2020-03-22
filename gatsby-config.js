@@ -8,6 +8,7 @@ module.exports = {
     siteUrl: `https://mobb.dev`,
   },
   plugins: [
+    `gatsby-plugin-netlify-cms`,
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
