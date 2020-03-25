@@ -8,7 +8,6 @@ module.exports = {
     siteUrl: `https://mobb.dev`,
   },
   plugins: [
-    `gatsby-plugin-netlify-cms`,
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
@@ -73,7 +72,7 @@ module.exports = {
       resolve: `gatsby-source-firebase`,
       options: {
         // point to the firebase private key downloaded
-        credential: JSON.parse(process.env.FIREBASE_API_KEY),
+        credential: JSON.parse(process.env.GATSBY_FIREBASE_API_JSON),
 
         // your firebase database root url
         databaseURL: process.env.GATSBY_FIREBASE_DATABASE_URL,
