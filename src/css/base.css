@@ -640,3 +640,12 @@ pre tt:after {
     padding: 15px 25px;
   }
 }
+
+.nav ul {
+  display: flex;
+  align-items: center;
+}
+
+.nav li + li {
+  margin-left: 1.5rem;
+}

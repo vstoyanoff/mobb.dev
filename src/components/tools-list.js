@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import styled from 'styled-components';
 import { WebpackLogo, WebpackLogoWhite } from './images';
 
@@ -11,6 +12,15 @@ const tools = [
     image: WebpackLogo,
     darkImage: WebpackLogoWhite,
     url: '/tools/webpack-config-generator',
+  },
+  {
+    name: 'JavaScript Obfuscator Tool',
+    description:
+      "This tool transforms your original JavaScript source code into a new representation that's harder to understand, copy, re-use and modify without authorization. The obfuscated result will have the exact functionality of the original code.",
+    image: 'https://obfuscator.io/static/images/logo.png',
+    darkImage: 'https://obfuscator.io/static/images/logo.png',
+    url: 'https://obfuscator.io/',
+    external: true,
   },
 ];
 
@@ -30,6 +40,10 @@ const StyledListItem = styled.li`
   article {
     display: block;
     width: 50%;
+  }
+
+  .image-wrapper {
+    text-align: center;
   }
 
   .image {
@@ -78,15 +92,36 @@ const ToolsList = () => (
       <StyledList>
         {tools.map(tool => (
           <StyledListItem>
-            <Link className="image-wrapper" to={tool.url}>
-              <tool.image className="image" />
+            {tool.external ? (
+              <OutboundLink
+                className="image-wrapper"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={tool.url}
+              >
+                <img className="image" src={tool.image} />
+              </OutboundLink>
+            ) : (
+              <Link className="image-wrapper" to={tool.url}>
+                <tool.image className="image" />
 
-              <tool.darkImage className="image image--dark" />
-            </Link>
+                <tool.darkImage className="image image--dark" />
+              </Link>
+            )}
 
             <article>
               <h2>
-                <Link to={tool.url}>{tool.name}</Link>
+                {tool.external ? (
+                  <OutboundLink
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={tool.url}
+                  >
+                    {tool.name}
+                  </OutboundLink>
+                ) : (
+                  <Link to={tool.url}>{tool.name}</Link>
+                )}
               </h2>
 
               <p>{tool.description}</p>

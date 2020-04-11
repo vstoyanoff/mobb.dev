@@ -111,6 +111,10 @@ const Header = () => {
         <nav className="nav">
           <ul>
             <li>
+              <Link to="/resources">JS Resources</Link>
+            </li>
+
+            <li>
               <Link to="/tools">Tools</Link>
             </li>
           </ul>
