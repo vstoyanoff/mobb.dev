@@ -127,6 +127,8 @@ const Layout = ({ children }) => {
       window.matchMedia('(prefers-color-scheme: dark)').matches
     ) {
       setMode('dark');
+    } else {
+      setMode('light');
     }
   }, []);
 
