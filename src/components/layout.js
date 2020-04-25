@@ -115,21 +115,21 @@ const Switch = styled.div`
 `;
 
 const Layout = ({ children }) => {
-  const [mode, setMode] = React.useState(
-    typeof window !== `undefined`
-      ? localStorage.getItem('mobbdev-mode')
-      : 'light'
-  );
+  const [mode, setMode] = React.useState('light');
 
   React.useEffect(() => {
+    if (localStorage.getItem('mobbdev-mode')) {
+      return setMode(localStorage.getItem('mobbdev-mode'));
+    }
+
     if (
       window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
     ) {
-      setMode('dark');
-    } else {
-      setMode('light');
+      return setMode('dark');
     }
+
+    setMode('light');
   }, []);
 
   React.useEffect(() => {

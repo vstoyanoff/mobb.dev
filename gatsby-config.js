@@ -27,18 +27,18 @@ module.exports = {
     },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
-    // {
-    //   resolve: `gatsby-plugin-manifest`,
-    //   options: {
-    //     name: `mobb.dev`,
-    //     short_name: `mobb.dev`,
-    //     start_url: `/`,
-    //     background_color: `#333`,
-    //     theme_color: `#f5f3ce`,
-    //     display: `minimal-ui`,
-    //     icon: `src/images/favicon.png`, // This path is relative to the root of the site.
-    //   },
-    // },
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `mobb.dev`,
+        short_name: `mobb.dev`,
+        start_url: `/`,
+        background_color: `#333`,
+        theme_color: `#f5f3ce`,
+        display: `minimal-ui`,
+        icon: `src/images/favicon.png`, // This path is relative to the root of the site.
+      },
+    },
     {
       resolve: `gatsby-plugin-prefetch-google-fonts`,
       options: {
@@ -90,7 +90,6 @@ module.exports = {
       },
     },
     `gatsby-plugin-netlify`,
-    `gatsby-plugin-netlify-cache`,
     `gatsby-plugin-sitemap`,
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-robots-txt`,
