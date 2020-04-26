@@ -5,12 +5,20 @@ import { useStaticQuery, graphql } from 'gatsby';
 import FeedItem from './feed-item';
 
 const FeaturedSection = styled.div`
-  border: 2px solid #333;
   padding: 30px;
   margin-bottom: 50px;
+  box-shadow: 6px 6px 14px 0 rgba(20, 20, 20, 0.2),
+    -8px -8px 18px 0 rgba(255, 255, 255, 0.55);
+  border-radius: 30px;
+
+  article {
+    box-shadow: none;
+    padding: 0;
+  }
 
   .dark-mode & {
-    border-color: #f5f3ce;
+    box-shadow: 6px 6px 14px 0 rgba(20, 20, 20, 0.2),
+      -8px -8px 18px 0 rgba(20, 20, 20, 0.55);
   }
 
   @media (max-width: 767px) {
@@ -20,18 +28,14 @@ const FeaturedSection = styled.div`
 
 const StyledFilter = styled.div`
   padding: 20px 0;
-  margin-bottom: 20px;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
-
-  .dark-mode & {
-    border-color: #f5f3ce;
-  }
+  margin-bottom: 30px;
 
   select {
     background-color: transparent;
-    border: 2px solid #333;
-    padding: 10px;
+    appearance: none;
+    border: none;
+    border-bottom: 1px solid #333;
+    border-radius: 0px;
     margin-bottom: 10px;
     color: #333;
     outline: none;
@@ -143,7 +147,7 @@ const Feed = () => {
         <FeaturedSection>
           <h2>Featured picks</h2>
 
-          {featured.map(article => (
+          {featured.map((article, i) => (
             <FeedItem key={article.node.id} data={article.node} />
           ))}
         </FeaturedSection>

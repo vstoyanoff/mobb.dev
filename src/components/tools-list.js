@@ -65,7 +65,16 @@ const StyledList = styled.ul`
 const StyledListItem = styled.li`
   display: flex;
   align-items: 'center';
-  margin-bottom: 60px;
+  margin-bottom: 40px;
+  box-shadow: 6px 6px 14px 0 rgba(20, 20, 20, 0.2),
+    -8px -8px 18px 0 rgba(255, 255, 255, 0.55);
+  border-radius: 30px;
+  padding: 20px;
+
+  .dark-mode & {
+    box-shadow: 6px 6px 14px 0 rgba(20, 20, 20, 0.2),
+      -8px -8px 18px 0 rgba(20, 20, 20, 0.55);
+  }
 
   .image-wrapper,
   article {
@@ -89,7 +98,7 @@ const StyledListItem = styled.li`
     .dark-mode & {
       display: none;
 
-      &--dark {
+      &.image--dark {
         display: block;
       }
     }
@@ -140,6 +149,12 @@ const ToolsList = () => (
                 href={tool.url}
               >
                 <img className="image" src={tool.image} alt={tool.name} />
+
+                <img
+                  className="image image--dark"
+                  src={tool.darkImage}
+                  alt={tool.name}
+                />
               </OutboundLink>
             ) : (
               <Link className="image-wrapper" to={tool.url}>
