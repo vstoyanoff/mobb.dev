@@ -12,8 +12,8 @@ const FeaturedSection = styled.div`
   border-radius: 30px;
 
   article {
-    box-shadow: none;
-    padding: 0;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
 
   .dark-mode & {
