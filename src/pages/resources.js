@@ -22,7 +22,7 @@ const StyledHero = styled.section`
 const ResourcesPage = () => (
   <Layout>
     <SEO
-      title="JavaScript Resources"
+      title="Web Developer Resources"
       description="Useful tools, websites, personal blogs and many more helpful resources."
     />
 

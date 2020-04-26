@@ -92,6 +92,14 @@ const StyledHeader = styled.header`
 
     .nav {
       order: 3;
+      width: 100%;
+      margin-top: 20px;
+
+      ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
   }
 `;

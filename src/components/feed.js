@@ -153,13 +153,13 @@ const Feed = () => {
         <StyledFilter>
           <div className="option">
             <p>By provider: </p>
-            <select onChange={handleFilter}>
-              <option value="All" default selected>
-                All articles
-              </option>
+            <select defaultValue="All" onChange={handleFilter}>
+              <option value="All">All articles</option>
 
               {filters.map(filter => (
-                <option value={filter}>{filter ? filter : 'Mobb.dev'}</option>
+                <option key={filter} value={filter}>
+                  {filter ? filter : 'Mobb.dev'}
+                </option>
               ))}
             </select>
           </div>

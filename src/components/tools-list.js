@@ -22,6 +22,37 @@ const tools = [
     url: 'https://obfuscator.io/',
     external: true,
   },
+  {
+    name: 'CSS Transform Functions Visualizer',
+    description: 'CSS3 2D / 3D Transform Functions Visualizer and Playground',
+    image:
+      'https://cdn.jsdelivr.net/gh/alterebro/css-transform/media/css-transform.jpg',
+    darkImage:
+      'https://cdn.jsdelivr.net/gh/alterebro/css-transform/media/css-transform.jpg',
+    url:
+      'https://css-transform.moro.es/?fbclid=IwAR1ZM-nBtXGzKVLSvX0VFM4QJv_BTly6zBhh1D3JNFTj8Si7mcDD4lKNnmg',
+    external: true,
+  },
+  {
+    name: 'CSS Grid Generator',
+    description: 'Easy way to set up your CSS Grid',
+    image: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/28963/og-cssgrid.jpg',
+    darkImage:
+      'https://s3-us-west-2.amazonaws.com/s.cdpn.io/28963/og-cssgrid.jpg',
+    url: 'https://cssgrid-generator.netlify.app/',
+    external: true,
+  },
+  {
+    name: 'CSS Section Separator Generator | wweb.dev',
+    description:
+      'A collection of customizable CSS section separators, with the possibility to easily copy the code.',
+    image:
+      'https://ik.imagekit.io/wwebdev/resources/css-separator-generator_7lds84DdzGW.png',
+    darkImage:
+      'https://ik.imagekit.io/wwebdev/resources/css-separator-generator_7lds84DdzGW.png',
+    url: 'https://wweb.dev/resources/css-separator-generator',
+    external: true,
+  },
 ];
 
 const StyledList = styled.ul`
@@ -34,7 +65,7 @@ const StyledList = styled.ul`
 const StyledListItem = styled.li`
   display: flex;
   align-items: 'center';
-  margin-bottom: 40px;
+  margin-bottom: 60px;
 
   .image-wrapper,
   article {
@@ -64,6 +95,10 @@ const StyledListItem = styled.li`
     }
   }
 
+  article {
+    padding-left: 30px;
+  }
+
   h2 a {
     text-decoration: none;
 
@@ -74,6 +109,7 @@ const StyledListItem = styled.li`
 
   @media (max-width: 768px) {
     display: block;
+    margin-bottom: 100px;
 
     .image-wrapper,
     article {
@@ -82,6 +118,10 @@ const StyledListItem = styled.li`
 
     .image-wrapper {
       margin-bottom: 20px;
+    }
+
+    article {
+      padding-left: 0px;
     }
   }
 `;
@@ -99,7 +139,7 @@ const ToolsList = () => (
                 rel="noopener noreferrer"
                 href={tool.url}
               >
-                <img className="image" src={tool.image} />
+                <img className="image" src={tool.image} alt={tool.name} />
               </OutboundLink>
             ) : (
               <Link className="image-wrapper" to={tool.url}>

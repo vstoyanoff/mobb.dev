@@ -23,15 +23,15 @@ const StyledHero = styled.section`
 const ToolsPage = () => (
   <Layout>
     <SEO
-      title="JavaScript tools for easing developers"
-      description="Custom-made tools for helping JavaScript developers on their way to make great things. Explore. Try. Use. Build."
+      title=" Tools for easing developers"
+      description="Custom-made tools for helping Web developers on their way to make great things. Explore. Try. Use. Build."
     />
 
     <StyledHero>
       <div className="shell">
         <p>
-          Custom tools to help <strong>you</strong> build your way in
-          JavaScript. Check them out! <br />
+          Custom tools to help <strong>you</strong> build your way in Web
+          development. Check them out! <br />
           If you have recommendations or want to report a bug hit me -{' '}
           <Link to="/contact">contact</Link>
         </p>

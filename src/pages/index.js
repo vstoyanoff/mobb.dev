@@ -22,7 +22,10 @@ const StyledHero = styled.section`
 
 const IndexPage = () => (
   <Layout>
-    <SEO />
+    <SEO
+      title="Web developers space"
+      description="If you are a web developer this website will be a huge help for you! Trust me."
+    />
 
     <StyledHero>
       <div className="shell">
@@ -30,8 +33,8 @@ const IndexPage = () => (
           Thanks for passing by!
           <br />
           This blog is something like my personal library for interesting
-          articles related to development. Also I'll give my best to write on
-          some interesting topic once a week, so bear with me.
+          articles related to web development. Also I'll give my best to write
+          on some interesting topic once a week, so bear with me.
           <br />
           If you wanna know more about me take a look at my social media
           profiles.
