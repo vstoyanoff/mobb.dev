@@ -73,3 +73,4 @@ yarn-error.log
 
 # Serverless functions build
 functions/build
+.vscode
