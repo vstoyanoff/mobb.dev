@@ -15,7 +15,7 @@ const StyledItem = styled.article`
 
   .dark-mode & {
     box-shadow: 6px 6px 14px 0 rgba(20, 20, 20, 0.2),
-      -8px -8px 18px 0 rgba(20, 20, 20, 0.55);
+      -8px -8px 18px 0 rgba(20, 20, 20, 0.35);
   }
 
   &:last-child {

@@ -206,11 +206,11 @@ body {
   font-feature-settings: 'kern', 'liga', 'clig', 'calt';
 }
 body.dark-mode {
-  color: #f5f3ce;
-  background-color: #333;
+  color: #fff;
+  background-color: rgb(40, 44, 53);
 }
 body.dark-mode a {
-  color: #f5f3ce;
+  color: #fff;
 }
 img {
   max-width: 100%;
