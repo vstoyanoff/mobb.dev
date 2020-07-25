@@ -8,7 +8,7 @@ import SEO from '../components/seo';
 
 import { StyledInput, StyledButton, StyledTextarea } from '../css/styled';
 
-import useInterval from '../utils/useInterval';
+import { useInterval } from '../utils';
 
 const quickFacts = [
   `I am from <a href="https://en.wikipedia.org/wiki/Bulgaria">Bulgaria</a>. Currently living in <a target="_blank" rel="noopener noreferrer" href="https://goo.gl/maps/yJQ6seGS793ykcXL7">Varna</a>`,

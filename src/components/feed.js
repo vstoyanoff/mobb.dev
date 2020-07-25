@@ -6,7 +6,7 @@ import { useStaticQuery, graphql } from 'gatsby';
 import FeedItem from './feed-item';
 
 //Utils
-import debounce from '../utils/debounce';
+import { debounce, throttle, pipe } from '../utils';
 
 const FeaturedSection = styled.div`
   padding: 30px;
@@ -32,7 +32,22 @@ const FeaturedSection = styled.div`
 
 const StyledFilter = styled.div`
   padding: 20px 0;
-  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    display: block;
+  }
+
+  h3 {
+    margin-bottom: 0;
+    margin-right: 20px;
+
+    @media (max-width: 767px) {
+      margin-right: 0px;
+      margin-bottom: 20px;
+    }
+  }
 
   select {
     background-color: transparent;
@@ -40,15 +55,14 @@ const StyledFilter = styled.div`
     border: none;
     border-bottom: 1px solid #333;
     border-radius: 0px;
-    margin-bottom: 10px;
     color: #333;
     outline: none;
     min-width: 250px;
     margin-bottom: 0px;
 
     .dark-mode & {
-      border-color: #f5f3ce;
-      color: #f5f3ce;
+      border-color: #fff;
+      color: #fff;
     }
   }
 
@@ -75,26 +89,56 @@ const StyledFilter = styled.div`
   }
 `;
 
+const StyledSearch = styled.div`
+  padding: 20px 0;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    display: block;
+  }
+
+  h3 {
+    margin-bottom: 0;
+    margin-right: 20px;
+
+    @media (max-width: 767px) {
+      margin-right: 0px;
+      margin-bottom: 20px;
+    }
+  }
+
+  input {
+    background-color: transparent;
+    appearance: none;
+    border: none;
+    border-bottom: 1px solid #333;
+    border-radius: 0px;
+    margin-bottom: 10px;
+    color: #333;
+    outline: none;
+    min-width: 250px;
+    margin-bottom: 0px;
+
+    .dark-mode & {
+      border-color: #fff;
+      color: #fff;
+    }
+  }
+`;
+
 const Feed = () => {
   /**
    * Query
    */
-  const { allArticles, featured, firstPage } = useStaticQuery(graphql`
+  const { total, siteFilters, featured, firstPage } = useStaticQuery(graphql`
     query articles {
-      allArticles: allArticles(sort: { fields: date, order: DESC }) {
-        edges {
-          node {
-            title
-            description
-            id
-            image
-            site
-            type
-            url
-            state
-            featured
-          }
-        }
+      total: allArticles {
+        totalCount
+      }
+      siteFilters: allArticles {
+        distinct(field: site)
       }
       featured: allArticles(
         filter: { featured: { eq: true }, state: { eq: "published" } }
@@ -136,16 +180,12 @@ const Feed = () => {
    * State
    */
   const [articles, setArticles] = React.useState(firstPage.edges);
-  const [filteredArticles, setFilteredArticles] = React.useState(
-    firstPage.edges
-  );
   const [filter, setFilter] = React.useState('All');
+  const [term, setTerm] = React.useState('');
   const [nextPage, setNextPage] = React.useState(2);
-  const filters = React.useMemo(
-    () =>
-      Array.from(new Set(allArticles.edges.map(article => article.node.site))),
-    [allArticles]
-  );
+  const [fetching, setFetching] = React.useState(false);
+
+  const totalPages = Math.ceil(total.totalCount / 6);
 
   /**
    * Methods
@@ -157,38 +197,83 @@ const Feed = () => {
       return arr.filter(({ node }) => node.site === filter);
     }
   };
+  const applyTerm = arr => {
+    if (term === '') {
+      return arr;
+    } else {
+      return arr.filter(
+        ({ node }) =>
+          node.title.toLowerCase().includes(term) ||
+          node.description.toLowerCase().includes(term)
+      );
+    }
+  };
+  const refine = pipe(applyFilter, applyTerm);
 
-  const fetchArticles = async () => {
-    if (nextPage === null) {
-      return;
+  //Fetch articles from pages
+  const fetchArticles = async page => {
+    if (page > totalPages) {
+      return {
+        data: [],
+        currentPage: page,
+        end: true,
+      };
     }
 
-    const json = await fetch(`/articles/articles-${nextPage}.json`).then(res =>
-      res.json()
-    );
-    setArticles([...articles, ...json.data]);
-    setFilteredArticles([...filteredArticles, ...applyFilter(json.data)]);
-    setNextPage(json.currentPage < json.pages ? nextPage + 1 : null);
+    const json = await (await fetch(`/articles/articles-${page}.json`)).json();
+
+    if (refine(json.data).length === 0) {
+      const nextCall = await fetchArticles(page + 1);
+
+      return {
+        data: [...json.data, ...nextCall.data],
+        currentPage: nextCall.currentPage,
+      };
+    } else {
+      return {
+        data: json.data,
+        currentPage: json.currentPage,
+      };
+    }
   };
 
+  //Trigger load more on end reached
   const loadMore = debounce(async () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 500 >=
-      document.body.clientHeight
+        document.body.clientHeight &&
+      !fetching &&
+      nextPage <= totalPages
     ) {
-      await fetchArticles();
+      setFetching(true);
+      const fetched = await fetchArticles(nextPage);
+
+      if (fetched.end) {
+        setNextPage(nextPage + 1);
+        setFetching(false);
+        return;
+      }
+
+      setArticles([...articles, ...fetched.data]);
+      setNextPage(fetched.currentPage + 1);
+      setFetching(false);
     }
-  }, 100);
+  }, 200);
 
   /**
    * Hooks
    */
-  React.useEffect(() => setFilteredArticles(applyFilter(articles)), [filter]);
   React.useEffect(() => {
     window.addEventListener('scroll', loadMore);
 
     return () => window.removeEventListener('scroll', loadMore);
   }, [loadMore]);
+  React.useEffect(() => {
+    if (term === '' && filter === 'All') {
+      setArticles(firstPage.edges);
+      setNextPage(2);
+    }
+  }, [term, filter]);
 
   return (
     <section>
@@ -201,18 +286,19 @@ const Feed = () => {
           ))}
         </FeaturedSection>
 
-        <h3>Let's filter!</h3>
-
         <StyledFilter>
+          <h3>Let's filter!</h3>
+
           <div className="option">
             <p>By provider: </p>
+
             <select
               defaultValue="All"
               onChange={e => setFilter(e.target.value)}
             >
-              <option value="All">All articles</option>
+              <option value="All">All</option>
 
-              {filters.map(filter => (
+              {siteFilters.distinct.map(filter => (
                 <option key={filter} value={filter}>
                   {filter ? filter : 'Mobb.dev'}
                 </option>
@@ -221,8 +307,19 @@ const Feed = () => {
           </div>
         </StyledFilter>
 
-        {filteredArticles.map(article => (
-          <FeedItem key={article.node.id} data={article.node} />
+        <StyledSearch>
+          <h3>Search!</h3>
+
+          <input
+            type="text"
+            onChange={e =>
+              throttle(setTerm(e.target.value.toLowerCase()), 1000)
+            }
+          />
+        </StyledSearch>
+
+        {refine(articles).map(article => (
+          <FeedItem key={article.node.id} data={article.node} term={term} />
         ))}
       </div>
     </section>

@@ -2,6 +2,7 @@ import React from 'react';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
+import { highlight } from '../utils';
 
 const StyledItem = styled.article`
   display: flex;
@@ -66,7 +67,7 @@ const StyledItem = styled.article`
   }
 `;
 
-const FeedItem = ({ data }) => (
+const FeedItem = ({ data, term }) => (
   <StyledItem>
     {data.image &&
       (data.type === 'external' ? (
@@ -97,11 +98,17 @@ const FeedItem = ({ data }) => (
             target="_blank"
             rel="noopener noreferrer"
             href={data.url}
-          >
-            {data.title}
-          </OutboundLink>
+            dangerouslySetInnerHTML={{
+              __html: highlight(data.title, term),
+            }}
+          />
         ) : (
-          <Link to={`/${data.url}`}>{data.title}</Link>
+          <Link
+            to={`/${data.url}`}
+            dangerouslySetInnerHTML={{
+              __html: highlight(data.title, term),
+            }}
+          />
         )}
       </h3>
 
@@ -120,7 +127,10 @@ const FeedItem = ({ data }) => (
         </h4>
       )}
 
-      <p style={{ marginBottom: 0 }}>{data.description}</p>
+      <p
+        style={{ marginBottom: 0 }}
+        dangerouslySetInnerHTML={{ __html: highlight(data.description, term) }}
+      />
     </div>
   </StyledItem>
 );
