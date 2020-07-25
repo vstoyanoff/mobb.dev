@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useStaticQuery, graphql } from 'gatsby';
 
+//Components
 import FeedItem from './feed-item';
+
+//Utils
+import debounce from '../utils/debounce';
 
 const FeaturedSection = styled.div`
   padding: 30px;
@@ -75,9 +79,42 @@ const Feed = () => {
   /**
    * Query
    */
-  const data = useStaticQuery(graphql`
+  const { allArticles, featured, firstPage } = useStaticQuery(graphql`
     query articles {
-      allArticles {
+      allArticles: allArticles(sort: { fields: date, order: DESC }) {
+        edges {
+          node {
+            title
+            description
+            id
+            image
+            site
+            type
+            url
+            state
+            featured
+          }
+        }
+      }
+      featured: allArticles(
+        filter: { featured: { eq: true }, state: { eq: "published" } }
+        sort: { fields: date, order: DESC }
+      ) {
+        edges {
+          node {
+            title
+            description
+            id
+            image
+            site
+            type
+            url
+            state
+            featured
+          }
+        }
+      }
+      firstPage: allArticles(limit: 6, sort: { fields: date, order: DESC }) {
         edges {
           node {
             title
@@ -98,48 +135,60 @@ const Feed = () => {
   /**
    * State
    */
-  const [articles, setArticles] = React.useState(
-    [...data.allArticles.edges]
-      .reverse()
-      .filter(
-        article => article.node.state === 'published' && !article.node.featured
-      )
+  const [articles, setArticles] = React.useState(firstPage.edges);
+  const [filteredArticles, setFilteredArticles] = React.useState(
+    firstPage.edges
   );
-
-  const featured = [...data.allArticles.edges]
-    .filter(
-      article => article.node.featured && article.node.state === 'published'
-    )
-    .reverse();
-
+  const [filter, setFilter] = React.useState('All');
+  const [nextPage, setNextPage] = React.useState(2);
   const filters = React.useMemo(
     () =>
-      Array.from(
-        new Set(data.allArticles.edges.map(article => article.node.site))
-      ),
-    [data.allArticles]
+      Array.from(new Set(allArticles.edges.map(article => article.node.site))),
+    [allArticles]
   );
 
   /**
    * Methods
    */
-  const handleFilter = e => {
-    const val = e.target.value;
-    if (val !== 'All') {
-      setArticles(
-        [...data.allArticles.edges].reverse().filter(a => a.node.site === val)
-      );
+  const applyFilter = arr => {
+    if (filter === 'All') {
+      return arr;
     } else {
-      setArticles(
-        [...data.allArticles.edges]
-          .reverse()
-          .filter(
-            article =>
-              article.node.state === 'published' && !article.node.featured
-          )
-      );
+      return arr.filter(({ node }) => node.site === filter);
     }
   };
+
+  const fetchArticles = async () => {
+    if (nextPage === null) {
+      return;
+    }
+
+    const json = await fetch(`/articles/articles-${nextPage}.json`).then(res =>
+      res.json()
+    );
+    setArticles([...articles, ...json.data]);
+    setFilteredArticles([...filteredArticles, ...applyFilter(json.data)]);
+    setNextPage(json.currentPage < json.pages ? nextPage + 1 : null);
+  };
+
+  const loadMore = debounce(async () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 500 >=
+      document.body.clientHeight
+    ) {
+      await fetchArticles();
+    }
+  }, 100);
+
+  /**
+   * Hooks
+   */
+  React.useEffect(() => setFilteredArticles(applyFilter(articles)), [filter]);
+  React.useEffect(() => {
+    window.addEventListener('scroll', loadMore);
+
+    return () => window.removeEventListener('scroll', loadMore);
+  }, [loadMore]);
 
   return (
     <section>
@@ -147,7 +196,7 @@ const Feed = () => {
         <FeaturedSection>
           <h2>Featured picks</h2>
 
-          {featured.map((article, i) => (
+          {featured.edges.map((article, i) => (
             <FeedItem key={article.node.id} data={article.node} />
           ))}
         </FeaturedSection>
@@ -157,7 +206,10 @@ const Feed = () => {
         <StyledFilter>
           <div className="option">
             <p>By provider: </p>
-            <select defaultValue="All" onChange={handleFilter}>
+            <select
+              defaultValue="All"
+              onChange={e => setFilter(e.target.value)}
+            >
               <option value="All">All articles</option>
 
               {filters.map(filter => (
@@ -169,7 +221,7 @@ const Feed = () => {
           </div>
         </StyledFilter>
 
-        {articles.map(article => (
+        {filteredArticles.map(article => (
           <FeedItem key={article.node.id} data={article.node} />
         ))}
       </div>

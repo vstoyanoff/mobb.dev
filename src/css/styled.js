@@ -10,8 +10,8 @@ export const StyledInput = styled.input`
   outline: none;
 
   .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
+    border-color: #fff;
+    color: #fff;
   }
 `;
 
@@ -31,8 +31,8 @@ export const StyledTextarea = styled.textarea`
   }
 
   .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
+    border-color: #fff;
+    color: #fff;
   }
 `;
 
@@ -46,11 +46,11 @@ export const StyledSelect = styled.select`
   outline: none;
 
   .dark-mode & {
-    border-color: #f5f3ce;
-    color: #f5f3ce;
+    border-color: #fff;
+    color: #fff;
 
     option {
-      color: #f5f3ce;
+      color: #fff;
     }
   }
 `;
@@ -85,7 +85,7 @@ export const StyledCheckbox = styled.div`
       cursor: pointer;
 
       .dark-mode & {
-        border-color: #f5f3ce;
+        border-color: #fff;
       }
     }
 
@@ -98,8 +98,8 @@ export const StyledCheckbox = styled.div`
       top: 50%;
       left: 7px;
       margin-top: 2px;
-      border-right: 2px solid #f5f3ce;
-      border-bottom: 2px solid #f5f3ce;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
       transform: rotate(45deg);
       opacity: 0;
       visibility: hidden;
@@ -114,7 +114,7 @@ export const StyledCheckbox = styled.div`
         background-color: #333;
 
         .dark-mode & {
-          background-color: #f5f3ce;
+          background-color: #fff;
         }
       }
 
@@ -158,7 +158,7 @@ export const StyledRadiobutton = styled.div`
       border-radius: 50%;
 
       .dark-mode & {
-        border-color: #f5f3ce;
+        border-color: #fff;
       }
     }
 
@@ -171,7 +171,7 @@ export const StyledRadiobutton = styled.div`
       top: 50%;
       left: 6px;
       margin-top: 6px;
-      background-color: #f5f3ce;
+      background-color: #fff;
       opacity: 0;
       visibility: hidden;
       border-radius: 50%;
@@ -186,7 +186,7 @@ export const StyledRadiobutton = styled.div`
         background-color: #333;
 
         .dark-mode & {
-          background-color: #f5f3ce;
+          background-color: #fff;
         }
       }
 
@@ -222,15 +222,15 @@ export const StyledButton = styled.button`
 
   &:hover {
     background: #333;
-    color: #f5f3ce;
+    color: #fff;
   }
 
   .dark-mode & {
-    color: #f5f3ce;
-    border-color: #f5f3ce;
+    color: #fff;
+    border-color: #fff;
 
     &:hover {
-      background: #f5f3ce;
+      background: #fff;
       color: #333;
     }
   }
@@ -243,12 +243,12 @@ export const StyledButton = styled.button`
   ${({ active }) =>
     active &&
     css`
-      color: #f5f3ce !important;
+      color: #fff !important;
       background-color: #333 !important;
 
       .dark-mode & {
         color: #333 !important;
-        background-color: #f5f3ce !important;
+        background-color: #fff !important;
       }
     `}
 `;

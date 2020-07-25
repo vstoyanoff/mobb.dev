@@ -84,6 +84,10 @@ const StyledList = styled.div`
     background: transparent;
     text-decoration: underline;
     cursor: pointer;
+
+    .dark-mode & {
+      color: #fff;
+    }
   }
 `;
 
@@ -418,7 +422,7 @@ const Cms = () => {
                 }}
               >
                 <StyledList>
-                  {allArticles.map(article => (
+                  {allArticles.reverse().map(article => (
                     <p key={article.date}>
                       <button onClick={() => handleFeatured(article, true)}>
                         {article.title}
