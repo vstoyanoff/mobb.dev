@@ -617,10 +617,6 @@ pre tt:after {
   content: '';
 }
 
-.hl {
-  background-color: yellow;
-}
-
 @media only screen and (max-width: 480px) {
   html {
     font-size: 100%;
@@ -652,4 +648,12 @@ pre tt:after {
 
 .nav li + li {
   margin-left: 1.5rem;
+}
+
+.hl {
+  background-color: yellow;
+}
+
+.dark-mode .hl {
+  background-color: blue;
 }
