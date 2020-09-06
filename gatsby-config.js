@@ -89,6 +89,7 @@ module.exports = {
         ],
       },
     },
+    `gatsby-plugin-typescript`,
     `gatsby-plugin-netlify`,
     `gatsby-plugin-sitemap`,
     `gatsby-plugin-styled-components`,
