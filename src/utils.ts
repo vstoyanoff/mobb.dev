@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-export const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
+export const pipe = (...fns: Function[]) => (x: any) =>
+  fns.reduce((y, f) => f(y), x);
 
-export const debounce = (func, delay) => {
-  let inDebounce;
-  return function() {
+export const debounce = (func: Function, delay: number) => {
+  let inDebounce: number;
+  return function(this: Function) {
     const context = this;
     const args = arguments;
     clearTimeout(inDebounce);
@@ -12,11 +13,11 @@ export const debounce = (func, delay) => {
   };
 };
 
-export const throttle = (func, limit) => {
-  let lastFunc;
-  let lastRan;
+export const throttle = (func: Function, limit: number) => {
+  let lastFunc: number;
+  let lastRan: number;
 
-  return function() {
+  return function(this: Function) {
     const context = this;
     const args = arguments;
     if (!lastRan) {
@@ -34,8 +35,8 @@ export const throttle = (func, limit) => {
   };
 };
 
-export function useInterval(callback, delay) {
-  const savedCallback = useRef();
+export function useInterval(callback: Function, delay: number) {
+  const savedCallback = useRef<Function>();
 
   // Remember the latest callback.
   useEffect(() => {
@@ -45,7 +46,7 @@ export function useInterval(callback, delay) {
   // Set up the interval.
   useEffect(() => {
     function tick() {
-      savedCallback.current();
+      typeof savedCallback.current !== 'undefined' && savedCallback.current();
     }
     if (delay !== null) {
       let id = setInterval(tick, delay);
@@ -54,7 +55,7 @@ export function useInterval(callback, delay) {
   }, [delay]);
 }
 
-export const highlight = (str, hl) => {
+export const highlight = (str: string, hl: string) => {
   if (!hl) {
     return str;
   }
