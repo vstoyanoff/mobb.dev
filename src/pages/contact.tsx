@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 //@ts-ignore
 import ReactHtmlParser from 'react-html-parser';
-//@ts-ignore
 import Recaptcha from 'react-google-recaptcha';
 
 //Components
@@ -140,7 +139,7 @@ const ContactPage: React.FC = () => {
   /**
    * Ref
    */
-  const recaptchaRef = useRef(null);
+  const recaptchaRef = useRef<any>();
 
   /**
    * Hooks
@@ -246,9 +245,8 @@ const ContactPage: React.FC = () => {
                 />
 
                 <Recaptcha
-                  style={{ marginBottom: 20 }}
                   ref={recaptchaRef}
-                  sitekey={process.env.GATSBY_APP_SITE_RECAPTCHA_KEY}
+                  sitekey={process.env.GATSBY_APP_SITE_RECAPTCHA_KEY || ''}
                 />
 
                 <StyledButton type="submit">Send</StyledButton>
