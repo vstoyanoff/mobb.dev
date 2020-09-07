@@ -1,23 +1,24 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+//@ts-ignore
 import ReactHtmlParser from 'react-html-parser';
+//@ts-ignore
 import Recaptcha from 'react-google-recaptcha';
 
+//Components
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 
+//Global styled components
 import { StyledInput, StyledButton, StyledTextarea } from '../css/styled';
 
+//Utils
 import { useInterval } from '../utils';
 
-const quickFacts = [
-  `I am from <a href="https://en.wikipedia.org/wiki/Bulgaria">Bulgaria</a>. Currently living in <a target="_blank" rel="noopener noreferrer" href="https://goo.gl/maps/yJQ6seGS793ykcXL7">Varna</a>`,
-  `My name is Veselin and it is pronounced like <a target="_blank" rel="noopener noreferrer" href="https://www.howtopronounce.com/veselin/">this</a>`,
-  `I enjoy remote lifestyle! It gives me freedom and I feel more focused on my work.`,
-  `I love JavaScript and everything related. Although I am working with React right now, I want to get in the Vue world as well. Also might try Svelte soon...`,
-  `I have 3 years of professional experience. My focus is Frontend, but I am doing things quite well as Fullstack JS Developer. Node.js is my preferred choice for backend.`,
-];
+//Types
+import { FormState } from '../types';
 
+//Local styled components
 const StyledRow = styled.article`
   display: flex;
   flex-direction: row;
@@ -107,26 +108,43 @@ const StyledHeading = styled.h1`
   }
 `;
 
-const encode = data => {
+const quickFacts = [
+  `I am from <a href="https://en.wikipedia.org/wiki/Bulgaria">Bulgaria</a>. Currently living in <a target="_blank" rel="noopener noreferrer" href="https://goo.gl/maps/yJQ6seGS793ykcXL7">Varna</a>`,
+  `My name is Veselin and it is pronounced like <a target="_blank" rel="noopener noreferrer" href="https://www.howtopronounce.com/veselin/">this</a>`,
+  `I enjoy remote lifestyle! It gives me freedom and I feel more focused on my work.`,
+  `I love JavaScript and everything related. Although I am working with React right now, I want to get in the Vue world as well. Also might try Svelte soon...`,
+  `I have 3 years of professional experience. My focus is Frontend, but I am doing things quite well as Fullstack JS Developer. Node.js is my preferred choice for backend.`,
+];
+
+const encode = (data: any) => {
   return Object.keys(data)
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
     .join('&');
 };
 
-const ContactPage = () => {
-  const [fact, setFact] = useState({
+const ContactPage: React.FC = () => {
+  /**
+   * State
+   */
+  const [fact, setFact] = useState<{ i: number; text: string }>({
     i: 0,
     text: quickFacts[0],
   });
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<FormState>({
     name: '',
     email: '',
     message: '',
   });
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
+  /**
+   * Ref
+   */
   const recaptchaRef = useRef(null);
 
+  /**
+   * Hooks
+   */
   useInterval(() => {
     if (fact.i >= quickFacts.length - 1) {
       setFact({
@@ -141,7 +159,7 @@ const ContactPage = () => {
     }
   }, 10000);
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target;
     const recaptchaValue = recaptchaRef.current.getValue();
@@ -166,7 +184,7 @@ const ContactPage = () => {
       .catch(error => alert(error));
   };
 
-  const handleChange = e => {
+  const handleChange = (e: React.SyntheticEvent) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 

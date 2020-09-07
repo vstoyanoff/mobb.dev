@@ -2,14 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import { useFirebase, FirebaseContext } from 'gatsby-plugin-firebase';
 
+//Components
 import Layout from '../components/layout';
 import Form from '../components/form';
 import LoadingOverlay from '../components/loading-overlay';
 import Authored from '../components/authored';
 import External from '../components/external';
 
+//Types
+import { Article, ArticleState } from '../types';
+
+//Global Styled components
 import { StyledButton, StyledSelect } from '../css/styled';
 
+//Local styled components
 const StyledFields = styled.fieldset`
   border: none;
   padding: 0 0 10px;
@@ -91,18 +97,18 @@ const StyledList = styled.div`
   }
 `;
 
-const Cms = () => {
+const Cms: React.FC = () => {
   /**
    * State
    */
-  const [auth, setAuth] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [mode, setMode] = React.useState('');
-  const [allArticles, setAllArticles] = React.useState([]);
-  const [featured, setFeatured] = React.useState([]);
-  const [drafts, setDrafts] = React.useState([]);
-  const [draftId, setDraftId] = React.useState(null);
-  const [data, setData] = React.useState({
+  const [auth, setAuth] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [mode, setMode] = React.useState<string>('');
+  const [allArticles, setAllArticles] = React.useState<Article[]>([]);
+  const [featured, setFeatured] = React.useState<Article[]>([]);
+  const [drafts, setDrafts] = React.useState<Article[]>([]);
+  const [draftId, setDraftId] = React.useState<number | null>(null);
+  const [data, setData] = React.useState<Article>({
     date: Date.now(),
     type: 'external',
     url: '',
@@ -112,7 +118,10 @@ const Cms = () => {
     content: '',
     site: '',
     featured: false,
+    state: ArticleState.DRAFT,
   });
+
+  //Firebase context
   const firebase = React.useContext(FirebaseContext);
 
   /**
@@ -128,11 +137,13 @@ const Cms = () => {
         firebase
           .database()
           .ref('/articles')
-          .on('value', snapshot => {
-            const articles = Object.values(snapshot.val());
+          .on('value', (snapshot: firebase.database.DataSnapshot) => {
+            const articles: Article[] = Object.values(snapshot.val());
             setAllArticles(articles);
             setFeatured(articles.filter(article => article.featured));
-            setDrafts(articles.filter(article => article.state === 'draft'));
+            setDrafts(
+              articles.filter(article => article.state === ArticleState.DRAFT)
+            );
           });
       }
     });
@@ -141,50 +152,64 @@ const Cms = () => {
   /**
    * Methods
    */
-  const handleAuth = ({ email, pass }) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, pass)
-      .then(() => setAuth(true))
-      .catch(e => {
-        setAuth(false);
-        console.log(e);
-      });
+  const handleAuth = ({
+    email,
+    pass,
+  }: {
+    email: string;
+    pass: string;
+  }): void => {
+    if (typeof firebase !== 'undefined') {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, pass)
+        .then(() => setAuth(true))
+        .catch(e => {
+          setAuth(false);
+          console.log(e);
+        });
+    }
   };
 
   const handleSignOut = () => {
     setLoading(true);
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        setAuth(false);
-        setLoading(false);
-      })
-      .catch(e => console.log(e));
+
+    if (typeof firebase !== 'undefined') {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          setAuth(false);
+          setLoading(false);
+        })
+        .catch(e => console.log(e));
+    }
   };
 
-  const handleDB = state => {
+  const handleDB = (state: ArticleState) => {
     setLoading(true);
     const dataToSave = { ...data, state };
-    firebase
-      .database()
-      .ref(`articles/${data.date}`)
-      .set(dataToSave)
-      .then(() => {
-        if (state === 'published') {
-          setDrafts(prevState =>
-            prevState.filter(draft => draft.id !== draftId)
-          );
-          setDraftId(null);
-        }
 
-        setLoading(false);
-        setType(data.type);
-      });
+    if (typeof firebase !== 'undefined') {
+      firebase
+        .database()
+        .ref(`articles/${data.date}`)
+        .set(dataToSave)
+        .then(() => {
+          if (state === ArticleState.PUBLISHED) {
+            setDrafts(prevState =>
+              prevState.filter(draft => draft.date !== draftId)
+            );
+            setDraftId(null);
+          }
+
+          setLoading(false);
+          setType(data.type);
+        });
+    }
   };
 
-  const setType = type =>
+  const setType = (type: string) =>
     setData({
       date: Date.now(),
       type,
@@ -195,18 +220,22 @@ const Cms = () => {
       content: '',
       site: '',
       featured: false,
+      state: ArticleState.DRAFT,
     });
 
   const loadDraft = () => {
     setLoading(true);
-    firebase
-      .database()
-      .ref(`/articles/${draftId}`)
-      .once('value')
-      .then(data => {
-        setData(data.val());
-        setLoading(false);
-      });
+
+    if (typeof firebase !== 'undefined') {
+      firebase
+        .database()
+        .ref(`/articles/${draftId}`)
+        .once('value')
+        .then(data => {
+          setData(data.val());
+          setLoading(false);
+        });
+    }
   };
 
   const getMetaData = async () => {
@@ -219,20 +248,24 @@ const Cms = () => {
       );
       const html = await fetchedData.text();
       const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const metaImage = doc.querySelector("meta[property='og:image']");
-      const description =
+      const doc: HTMLDocument = parser.parseFromString(html, 'text/html');
+      const metaImage: HTMLMetaElement | null = doc.querySelector(
+        "meta[property='og:image']"
+      );
+      const description: HTMLMetaElement | null =
         doc.querySelector("meta[name='description']") ||
         doc.querySelector("meta[property='og:description']");
       const title = doc.querySelector('title');
-      const site = doc.querySelector("meta[property='og:site_name']");
+      const site: HTMLMetaElement | null = doc.querySelector(
+        "meta[property='og:site_name']"
+      );
       setData({
         ...data,
         title: title ? title.text : '',
         description: description ? description.content : '',
-        site: site && site.content,
+        site: site ? site.content : '',
         content: '',
-        image: metaImage && metaImage.content,
+        image: metaImage ? metaImage.content : '',
       });
 
       setLoading(false);
@@ -245,16 +278,18 @@ const Cms = () => {
     setLoading(true);
     fetch('https://api.netlify.com/build_hooks/5e1325748f25809185cb13d5', {
       method: 'POST',
-      body: {},
-    }).then(res => setLoading(false));
+      body: null,
+    }).then(() => setLoading(false));
   };
 
-  const handleFeatured = (article, state) => {
-    const updated = { ...article, featured: state };
-    firebase
-      .database()
-      .ref(`articles/${updated.date}`)
-      .set(updated);
+  const handleFeatured = (article: Article, state: boolean) => {
+    if (typeof firebase !== 'undefined') {
+      const updated = { ...article, featured: state };
+      firebase
+        .database()
+        .ref(`articles/${updated.date}`)
+        .set(updated);
+    }
   };
 
   return (
@@ -339,7 +374,7 @@ const Cms = () => {
 
                     <StyledButton
                       disabled={data.url === ''}
-                      onClick={() => handleDB('published')}
+                      onClick={() => handleDB(ArticleState.PUBLISHED)}
                     >
                       Publish
                     </StyledButton>
@@ -351,11 +386,15 @@ const Cms = () => {
                     <Authored setData={setData} data={data} />
 
                     <StyledActions>
-                      <StyledButton onClick={() => handleDB('draft')}>
+                      <StyledButton
+                        onClick={() => handleDB(ArticleState.DRAFT)}
+                      >
                         Save Draft
                       </StyledButton>
 
-                      <StyledButton onClick={() => handleDB('published')}>
+                      <StyledButton
+                        onClick={() => handleDB(ArticleState.PUBLISHED)}
+                      >
                         Publish
                       </StyledButton>
                     </StyledActions>
@@ -376,7 +415,9 @@ const Cms = () => {
                   <StyledSelect
                     value={draftId}
                     onChange={event =>
-                      setDraftId(event.target.selectedOptions[0].value)
+                      setDraftId(
+                        parseInt(event.target.selectedOptions[0].value, 10)
+                      )
                     }
                   >
                     <option defaultChecked disabled selected>
@@ -399,11 +440,15 @@ const Cms = () => {
                   <>
                     <Authored data={data} setData={setData} />
                     <StyledActions>
-                      <StyledButton onClick={() => handleDB('draft')}>
+                      <StyledButton
+                        onClick={() => handleDB(ArticleState.DRAFT)}
+                      >
                         Save changes
                       </StyledButton>
 
-                      <StyledButton onClick={() => handleDB('published')}>
+                      <StyledButton
+                        onClick={() => handleDB(ArticleState.PUBLISHED)}
+                      >
                         Publish
                       </StyledButton>
                     </StyledActions>
