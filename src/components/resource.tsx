@@ -2,6 +2,10 @@ import React from 'react';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import styled from 'styled-components';
 
+//Types
+import { Resource as ResourceType } from '../types';
+
+//Local styled components
 const StyledItem = styled.article`
   display: flex;
   position: relative;
@@ -69,7 +73,7 @@ const StyledItem = styled.article`
   }
 `;
 
-const Resource = ({ data }) => (
+const Resource = ({ data }: { data: ResourceType }) => (
   <StyledItem>
     <OutboundLink
       className="image"

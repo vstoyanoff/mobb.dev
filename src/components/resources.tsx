@@ -1,13 +1,20 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 
+//Components
 import Resource from './resource';
+
+//Types
+import { Resource as ResourceType } from '../types';
+type QueryResult = {
+  allResources: { edges: { node: ResourceType }[] };
+};
 
 const Resources = () => {
   /**
    * Query
    */
-  const data = useStaticQuery(graphql`
+  const data = useStaticQuery<QueryResult>(graphql`
     query resources {
       allResources {
         edges {

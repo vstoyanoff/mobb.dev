@@ -8,8 +8,7 @@
  * * https://www.npmjs.com/package/js-base64
  */
 
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useRef, useEffect, ReactHTMLElement } from 'react';
 import {
   Editor,
   EditorState,
@@ -25,8 +24,11 @@ import { Base64 } from 'js-base64';
 import styled, { css } from 'styled-components';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import 'draft-js/dist/Draft.css';
+
+//Global styled components
 import { StyledInput } from '../css/styled';
 
+//Local styled components
 const StyledRichText = styled.div`
   position: relative;
   border: 2px solid #333;
@@ -87,7 +89,19 @@ const StyledEditor = styled.div`
   }
 `;
 
-const findLinkEntities = (contentBlock, callback, contentState) => {
+//Types
+type Props = {
+  edit?: boolean;
+  data: string;
+  onChange: (e: SyntheticEvent) => void;
+  onBlur?: (e: SyntheticEvent) => void;
+};
+
+const findLinkEntities = (
+  contentBlock: Draft.ContentBlock,
+  callback: (start: number, end: number) => void,
+  contentState: Draft.ContentState
+) => {
   contentBlock.findEntityRanges(character => {
     const entityKey = character.getEntity();
     return (
@@ -97,11 +111,19 @@ const findLinkEntities = (contentBlock, callback, contentState) => {
   }, callback);
 };
 
-const Link = props => {
-  const { url } = props.contentState.getEntity(props.entityKey).getData();
+const Link = ({
+  contentState,
+  entityKey,
+  children,
+}: {
+  contentState: Draft.ContentState;
+  entityKey: string;
+  children: any;
+}) => {
+  const { url } = contentState.getEntity(entityKey).getData();
   return (
     <OutboundLink target="_blank" rel="noopener noreferrer" href={url}>
-      {props.children}
+      {children}
     </OutboundLink>
   );
 };
@@ -109,7 +131,7 @@ const Link = props => {
 /**
  * Rich text field
  */
-const RichTextField = props => {
+const RichTextField: React.FC<Props> = props => {
   const decorator = new CompositeDecorator([
     {
       strategy: findLinkEntities,
@@ -132,7 +154,7 @@ const RichTextField = props => {
   /**
    * Refs
    */
-  const urlInputRef = useRef(null);
+  const urlInputRef = useRef();
 
   /**
    * Hooks
@@ -147,14 +169,14 @@ const RichTextField = props => {
 
   useEffect(() => {
     if (link.showInput) {
-      urlInputRef.current.focus();
+      urlInputRef && urlInputRef.current && urlInputRef.current.focus();
     }
   }, [link]);
 
   /**
    * Methods
    */
-  const onChange = editorState => {
+  const onChange = (editorState: Draft.EditorState) => {
     const raw = convertToRaw(editorState.getCurrentContent());
     const encodedData = Base64.encode(JSON.stringify(raw));
     setEditorState(editorState);
@@ -162,7 +184,7 @@ const RichTextField = props => {
     props.onChange(encodedData);
   };
 
-  const handleKeyCommand = command => {
+  const handleKeyCommand = (command: string) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       onChange(newState);
@@ -171,7 +193,7 @@ const RichTextField = props => {
     return false;
   };
 
-  const mapKeyToEditorCommand = e => {
+  const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
     if (e.keyCode === 9 /* Tab */) {
       const newEditorState = RichUtils.onTab(e, editorState, 4);
       if (newEditorState !== editorState) {
@@ -182,15 +204,15 @@ const RichTextField = props => {
     return getDefaultKeyBinding(e);
   };
 
-  const toggleBlockType = blockType => {
+  const toggleBlockType = (blockType: string) => {
     onChange(RichUtils.toggleBlockType(editorState, blockType));
   };
 
-  const toggleInlineStyle = inlineStyle => {
+  const toggleInlineStyle = (inlineStyle: string) => {
     onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
 
-  const getBlockStyle = block => {
+  const getBlockStyle = (block: Draft.ContentBlock) => {
     switch (block.getType()) {
       case 'blockquote':
         return 'blockquote';
@@ -199,7 +221,7 @@ const RichTextField = props => {
     }
   };
 
-  const handleReturn = e => {
+  const handleReturn = (e: React.KeyboardEvent) => {
     if (e.shiftKey) {
       setEditorState(RichUtils.insertSoftNewline(editorState));
       return 'handled';
@@ -207,7 +229,7 @@ const RichTextField = props => {
     return 'not-handled';
   };
 
-  const promptForLink = e => {
+  const promptForLink = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (link.showInput) {
@@ -240,7 +262,7 @@ const RichTextField = props => {
     }
   };
 
-  const confirmLink = e => {
+  const confirmLink = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     const contentState = editorState.getCurrentContent();
@@ -301,28 +323,41 @@ const RichTextField = props => {
    *
    * Inliner components
    */
-  const Button = props => {
+  const Button = ({
+    small,
+    active,
+    label,
+    style,
+    toggle,
+  }: {
+    small?: boolean;
+    active: boolean;
+    label: string;
+    style: {};
+    toggle: CallableFunction;
+  }) => {
     /**
      * Methods
      */
-    const onToggle = e => {
+    const onToggle = (e: React.SyntheticEvent) => {
       e.preventDefault();
-      props.onToggle(props.style);
+      toggle(style);
     };
 
     return (
-      <StyledButton
-        small={props.small}
-        active={props.active}
-        onMouseDown={onToggle}
-      >
-        {props.label}
+      <StyledButton small={small} active={active} onMouseDown={onToggle}>
+        {label}
       </StyledButton>
     );
   };
 
-  const BlockStyleControls = props => {
-    const { editorState } = props;
+  const BlockStyleControls = ({
+    editorState,
+    onToggle,
+  }: {
+    editorState: Draft.EditorState;
+    onToggle: CallableFunction;
+  }) => {
     const selection = editorState.getSelection();
     const blockType = editorState
       .getCurrentContent()
@@ -336,7 +371,7 @@ const RichTextField = props => {
             key={type.label}
             active={type.style === blockType}
             label={type.label}
-            onToggle={props.onToggle}
+            toggle={onToggle}
             style={type.style}
           />
         ))}
@@ -344,8 +379,14 @@ const RichTextField = props => {
     );
   };
 
-  const InlineStyleControls = props => {
-    const currentStyle = props.editorState.getCurrentInlineStyle();
+  const InlineStyleControls = ({
+    editorState,
+    onToggle,
+  }: {
+    editorState: Draft.EditorState;
+    onToggle: CallableFunction;
+  }) => {
+    const currentStyle = editorState.getCurrentInlineStyle();
 
     return (
       <div>
@@ -355,7 +396,7 @@ const RichTextField = props => {
             key={type.label}
             active={currentStyle.has(type.style)}
             label={type.label}
-            onToggle={props.onToggle}
+            toggle={onToggle}
             style={type.style}
           />
         ))}
@@ -410,7 +451,7 @@ const RichTextField = props => {
           onToggle={toggleInlineStyle}
         />
 
-        <MediaControls editorState={editorState} />
+        <MediaControls />
 
         {link.showInput && <LinkInput />}
       </StyledControls>
@@ -435,14 +476,11 @@ const RichTextField = props => {
 /**
  * Rich text rendering component
  */
-const RichTextRenderer = props => {
-  const decodedData =
-    props.data !== '' ? JSON.parse(Base64.decode(props.data)) : '';
-  const data = props.data.length
-    ? stateToHTML(convertFromRaw(decodedData))
-    : '';
+const RichTextRenderer = ({ data }: { data: string }) => {
+  const decodedData = data !== '' ? JSON.parse(Base64.decode(data)) : '';
+  const d = data.length ? stateToHTML(convertFromRaw(decodedData)) : '';
 
-  return ReactHtmlParser(data);
+  return ReactHtmlParser(d);
 };
 
 /**
@@ -453,23 +491,24 @@ const RichTextRenderer = props => {
  * @param {Function} onBlur
  */
 
-const RichText = props =>
-  props.edit ? (
-    <RichTextField data={props.data} onChange={props.onChange} />
+const RichText = ({
+  data,
+  edit,
+  onChange,
+}: {
+  data: string;
+  edit: boolean;
+  onChange: CallableFunction;
+}) =>
+  edit ? (
+    <RichTextField data={data} onChange={onChange} />
   ) : (
-    <RichTextRenderer data={props.data} />
+    <RichTextRenderer data={data} />
   );
 
 RichText.defaultProps = {
   edit: false,
   data: '',
-};
-
-RichText.propTypes = {
-  edit: PropTypes.bool,
-  data: PropTypes.string,
-  onChange: PropTypes.func,
-  onBlur: PropTypes.func,
 };
 
 export default RichText;

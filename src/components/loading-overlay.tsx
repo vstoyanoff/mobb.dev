@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
+//Local styled components
 const StyledOverlay = styled.div`
   position: fixed;
   z-index: 100;
@@ -16,7 +17,7 @@ const StyledOverlay = styled.div`
   justify-content: center;
 `;
 
-const LoadingOverlay = () => (
+const LoadingOverlay: React.FC = () => (
   <StyledOverlay>
     <FontAwesomeIcon icon={faSpinner} spin size="lg" color="#333" />
   </StyledOverlay>

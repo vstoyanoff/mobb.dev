@@ -11,10 +11,10 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faCloudMoon } from '@fortawesome/free-solid-svg-icons';
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+//Components
 import Header from './header';
 import Footer from './footer';
 
@@ -114,25 +114,34 @@ const Switch = styled.div`
   }
 `;
 
-const Layout = ({ children }) => {
-  const [mode, setMode] = React.useState('light');
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [mode, setMode] = useState<string>('light');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (localStorage.getItem('mobbdev-mode')) {
-      return setMode(localStorage.getItem('mobbdev-mode'));
+      const localStorageMode = localStorage.getItem('mobbdev-mode');
+
+      if (localStorageMode !== null) {
+        setMode(localStorageMode);
+        return;
+      } else {
+        setMode('light');
+        return;
+      }
     }
 
     if (
       window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
     ) {
-      return setMode('dark');
+      setMode('dark');
+      return;
     }
 
     setMode('light');
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem('mobbdev-mode', mode);
 
     if (mode === 'light') {
@@ -152,7 +161,7 @@ const Layout = ({ children }) => {
 
   return (
     <Wrapper>
-      <Switch mode={mode}>
+      <Switch>
         <FontAwesomeIcon icon={faSun} className="sun" />
 
         <button onClick={toggleMode}></button>
@@ -167,10 +176,6 @@ const Layout = ({ children }) => {
       <Footer />
     </Wrapper>
   );
-};
-
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export default Layout;

@@ -14,23 +14,15 @@ export const debounce = (func: Function, delay: number) => {
 };
 
 export const throttle = (func: Function, limit: number) => {
-  let lastFunc: number;
-  let lastRan: number;
+  let isCalled = false;
 
-  return function(this: Function) {
-    const context = this;
-    const args = arguments;
-    if (!lastRan) {
-      func.apply(context, args);
-      lastRan = Date.now();
-    } else {
-      clearTimeout(lastFunc);
-      lastFunc = setTimeout(function() {
-        if (Date.now() - lastRan >= limit) {
-          func.apply(context, args);
-          lastRan = Date.now();
-        }
-      }, limit - (Date.now() - lastRan));
+  return function(...args: any) {
+    if (!isCalled) {
+      func(...args);
+      isCalled = true;
+      setTimeout(function() {
+        isCalled = false;
+      }, limit);
     }
   };
 };
@@ -55,7 +47,7 @@ export function useInterval(callback: Function, delay: number) {
   }, [delay]);
 }
 
-export const highlight = (str: string, hl: string) => {
+export const highlight = (str: string, hl: string | undefined) => {
   if (!hl) {
     return str;
   }

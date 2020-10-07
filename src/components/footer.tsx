@@ -2,8 +2,10 @@ import React from 'react';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import styled from 'styled-components';
 
+//Assets
 import { IconGatsby } from './images';
 
+//Local styled components
 const StyledFooter = styled.footer`
   .shell {
     display: flex;
@@ -28,7 +30,7 @@ const StyledFooter = styled.footer`
   }
 `;
 
-const Footer = () => (
+const Footer: React.FC = () => (
   <StyledFooter>
     <div className="shell">
       <p>Powered by</p>

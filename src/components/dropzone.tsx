@@ -7,11 +7,24 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+
+enum Status {
+  UPLOADING = 'uploading',
+  ERROR = 'error',
+  SUCCESS = 'success',
+  DONE = 'done',
+}
+
+type Props = {
+  onUpload: Function;
+  acceptedFileTypes?: string;
+  multiple?: boolean;
+  noText?: boolean;
+};
 
 /**
  * Props
@@ -21,7 +34,8 @@ import { faSpinner, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
  * @param {Boolean} noText
  */
 
-const StyledDropzone = styled.div`
+//Local styled components
+const StyledDropzone = styled.div<{ status: Status; image: string | null }>`
   min-height: 220px;
   display: flex;
   align-items: center;
@@ -30,15 +44,15 @@ const StyledDropzone = styled.div`
   border: 1px dashed #333;
   margin-bottom: 20px;
   ${({ status, image }) =>
-    (status === 'uploading' &&
+    (status === Status.UPLOADING &&
       css`
         background: rgba(249, 215, 28, 0.3);
       `) ||
-    (status === 'error' &&
+    (status === Status.ERROR &&
       css`
         background: rgba(255, 0, 0, 0.3);
       `) ||
-    (status === 'success' &&
+    (status === Status.SUCCESS &&
       image &&
       css`
         background-image: url(${image});
@@ -58,20 +72,20 @@ const StyledDropzone = styled.div`
   }
 `;
 
-const Dropzone = props => {
+const Dropzone: React.FC<Props> = props => {
   /**
    * State
    */
-  const [image, setImage] = useState(null);
-  const [status, setStatus] = useState('done');
+  const [image, setImage] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status>(Status.DONE);
 
   /**
    * Methods
    */
   const onDrop = useCallback(acceptedFiles => {
-    setStatus('uploading');
+    setStatus(Status.UPLOADING);
 
-    acceptedFiles.map(async file => {
+    acceptedFiles.map(async (file: string) => {
       const data = new FormData();
       data.append('file', file);
       data.append('upload_preset', 'mobb.dev');
@@ -84,7 +98,7 @@ const Dropzone = props => {
         }
       );
       const f = await res.json();
-      setStatus('success');
+      setStatus(Status.SUCCESS);
       setImage(f.secure_url);
       props.onUpload(f.secure_url);
     });
@@ -100,16 +114,16 @@ const Dropzone = props => {
         multiple={props.multiple}
         name="upload"
       />
-      {!props.noText && status === 'done' && (
+      {!props.noText && status === Status.DONE && (
         <p>
           {props.multiple
             ? "Drag 'n' drop some files here, \n or click to select files"
             : "Drag 'n' drop a file here, \n or click to select file"}
         </p>
       )}
-      {status === 'uploading' && <FontAwesomeIcon icon={faSpinner} spin />}
-      {status === 'error' && <FontAwesomeIcon icon={faTimes} />}
-      {status === 'success' && <FontAwesomeIcon icon={faCheck} />}
+      {status === Status.UPLOADING && <FontAwesomeIcon icon={faSpinner} spin />}
+      {status === Status.ERROR && <FontAwesomeIcon icon={faTimes} />}
+      {status === Status.SUCCESS && <FontAwesomeIcon icon={faCheck} />}
     </StyledDropzone>
   );
 };
@@ -117,13 +131,6 @@ const Dropzone = props => {
 Dropzone.defaultProps = {
   noText: false,
   multiple: false,
-};
-
-Dropzone.propTypes = {
-  onUpload: PropTypes.func,
-  acceptedFileTypes: PropTypes.string,
-  multiple: PropTypes.bool,
-  noText: PropTypes.bool,
 };
 
 export default Dropzone;

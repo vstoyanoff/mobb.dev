@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useStaticQuery, graphql } from 'gatsby';
 
@@ -8,6 +8,16 @@ import FeedItem from './feed-item';
 //Utils
 import { debounce, throttle, pipe } from '../utils';
 
+//Types
+import { Article } from '../types';
+type QueryResult = {
+  total: { totalCount: number };
+  siteFilters: { distinct: string[] };
+  featured: { edges: { node: Article }[] };
+  firstPage: { edges: { node: Article }[] };
+};
+
+//Local styled components
 const FeaturedSection = styled.div`
   padding: 30px;
   margin-bottom: 50px;
@@ -128,11 +138,13 @@ const StyledSearch = styled.div`
   }
 `;
 
-const Feed = () => {
+const Feed: React.FC = () => {
   /**
    * Query
    */
-  const { total, siteFilters, featured, firstPage } = useStaticQuery(graphql`
+  const { total, siteFilters, featured, firstPage } = useStaticQuery<
+    QueryResult
+  >(graphql`
     query articles {
       total: allArticles {
         totalCount
@@ -148,7 +160,7 @@ const Feed = () => {
           node {
             title
             description
-            id
+            date
             image
             site
             type
@@ -163,7 +175,7 @@ const Feed = () => {
           node {
             title
             description
-            id
+            date
             image
             site
             type
@@ -179,25 +191,27 @@ const Feed = () => {
   /**
    * State
    */
-  const [articles, setArticles] = React.useState(firstPage.edges);
-  const [filter, setFilter] = React.useState('All');
-  const [term, setTerm] = React.useState('');
-  const [nextPage, setNextPage] = React.useState(2);
-  const [fetching, setFetching] = React.useState(false);
+  const [articles, setArticles] = useState<{ node: Article }[]>(
+    firstPage.edges
+  );
+  const [filter, setFilter] = useState<string>('All');
+  const [term, setTerm] = useState<string>('');
+  const [nextPage, setNextPage] = useState<number>(2);
+  const [fetching, setFetching] = useState<boolean>(false);
 
-  const totalPages = Math.ceil(total.totalCount / 6);
+  const totalPages: number = Math.ceil(total.totalCount / 6);
 
   /**
    * Methods
    */
-  const applyFilter = arr => {
+  const applyFilter = (arr: { node: Article }[]) => {
     if (filter === 'All') {
       return arr;
     } else {
       return arr.filter(({ node }) => node.site === filter);
     }
   };
-  const applyTerm = arr => {
+  const applyTerm = (arr: { node: Article }[]) => {
     if (term === '') {
       return arr;
     } else {
@@ -211,7 +225,13 @@ const Feed = () => {
   const refine = pipe(applyFilter, applyTerm);
 
   //Fetch articles from pages
-  const fetchArticles = async page => {
+  const fetchArticles = async (
+    page: number
+  ): Promise<{
+    data: { node: Article }[] | [];
+    currentPage: number;
+    end?: boolean;
+  }> => {
     if (page > totalPages) {
       return {
         data: [],
@@ -263,12 +283,13 @@ const Feed = () => {
   /**
    * Hooks
    */
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('scroll', loadMore);
 
     return () => window.removeEventListener('scroll', loadMore);
   }, [loadMore]);
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (term === '' && filter === 'All') {
       setArticles(firstPage.edges);
       setNextPage(2);
@@ -281,8 +302,8 @@ const Feed = () => {
         <FeaturedSection>
           <h2>Featured picks</h2>
 
-          {featured.edges.map((article, i) => (
-            <FeedItem key={article.node.id} data={article.node} />
+          {featured.edges.map((article: { node: Article }) => (
+            <FeedItem key={article.node.date} data={article.node} />
           ))}
         </FeaturedSection>
 
@@ -312,14 +333,14 @@ const Feed = () => {
 
           <input
             type="text"
-            onChange={e =>
-              throttle(setTerm(e.target.value.toLowerCase()), 1000)
+            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+              setTerm(e.target.value.toLowerCase())
             }
           />
         </StyledSearch>
 
-        {refine(articles).map(article => (
-          <FeedItem key={article.node.id} data={article.node} term={term} />
+        {refine(articles).map((article: { node: Article }) => (
+          <FeedItem key={article.node.date} data={article.node} term={term} />
         ))}
       </div>
     </section>

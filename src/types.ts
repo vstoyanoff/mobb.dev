@@ -39,6 +39,13 @@ export type Article = {
   state: ArticleState;
 };
 
+export type Resource = {
+  title: string;
+  description: string;
+  url: string;
+  image?: string;
+};
+
 export type FormState = {
   name: string;
   email: string;

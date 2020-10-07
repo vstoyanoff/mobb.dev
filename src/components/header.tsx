@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { IconMobbDev } from './images';
 
+//Local styled components
 const StyledHeader = styled.header`
   text-align: center;
 
@@ -104,58 +105,56 @@ const StyledHeader = styled.header`
   }
 `;
 
-const Header = () => {
-  return (
-    <StyledHeader>
-      <div className="shell">
-        <div className="image">
-          <Link to="/">
-            <IconMobbDev />
-          </Link>
-        </div>
-
-        <h1>&#402;(m)(o)(b)(b).dev</h1>
-
-        <nav className="nav">
-          <ul>
-            <li>
-              <Link to="/resources">JS Resources</Link>
-            </li>
-
-            <li>
-              <Link to="/tools">Tools</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="socials">
-          <OutboundLink
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.linkedin.com/in/veselin-stoyanov-20382b47/"
-          >
-            <FontAwesomeIcon icon={faLinkedin} size="sm" />
-          </OutboundLink>
-          &nbsp;&nbsp;&nbsp;
-          <OutboundLink
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://twitter.com/mobbdev"
-          >
-            <FontAwesomeIcon icon={faTwitter} size="sm" />
-          </OutboundLink>
-          &nbsp;&nbsp;&nbsp;
-          <OutboundLink
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://github.com/mobbdev/"
-          >
-            <FontAwesomeIcon icon={faGithub} size="sm" />
-          </OutboundLink>
-        </div>
+const Header: React.FC = () => (
+  <StyledHeader>
+    <div className="shell">
+      <div className="image">
+        <Link to="/">
+          <IconMobbDev />
+        </Link>
       </div>
-    </StyledHeader>
-  );
-};
+
+      <h1>&#402;(m)(o)(b)(b).dev</h1>
+
+      <nav className="nav">
+        <ul>
+          <li>
+            <Link to="/resources">JS Resources</Link>
+          </li>
+
+          <li>
+            <Link to="/tools">Tools</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <div className="socials">
+        <OutboundLink
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.linkedin.com/in/veselin-stoyanov-20382b47/"
+        >
+          <FontAwesomeIcon icon={faLinkedin} size="sm" />
+        </OutboundLink>
+        &nbsp;&nbsp;&nbsp;
+        <OutboundLink
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://twitter.com/mobbdev"
+        >
+          <FontAwesomeIcon icon={faTwitter} size="sm" />
+        </OutboundLink>
+        &nbsp;&nbsp;&nbsp;
+        <OutboundLink
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/mobbdev/"
+        >
+          <FontAwesomeIcon icon={faGithub} size="sm" />
+        </OutboundLink>
+      </div>
+    </div>
+  </StyledHeader>
+);
 
 export default Header;

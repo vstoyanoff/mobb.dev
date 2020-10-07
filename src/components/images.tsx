@@ -64,13 +64,13 @@ export const IconMobbDev = () => {
   return <Img fixed={iconMobbDev.childImageSharp.fixed} />;
 };
 
-export const WebpackLogo = props => {
+export const WebpackLogo = (props: any) => {
   const { logoWebpack } = useImages();
 
   return <Img {...props} fluid={logoWebpack.childImageSharp.fluid} />;
 };
 
-export const WebpackLogoWhite = props => {
+export const WebpackLogoWhite = (props: any) => {
   const { logoWebpackWhite } = useImages();
 
   return <Img {...props} fluid={logoWebpackWhite.childImageSharp.fluid} />;
