@@ -17,6 +17,8 @@ import {
   convertFromRaw,
   getDefaultKeyBinding,
   CompositeDecorator,
+  DraftHandleValue,
+  ContentBlock,
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import ReactHtmlParser from 'react-html-parser';
@@ -93,8 +95,8 @@ const StyledEditor = styled.div`
 type Props = {
   edit?: boolean;
   data: string;
-  onChange: (e: SyntheticEvent) => void;
-  onBlur?: (e: SyntheticEvent) => void;
+  onChange: (e: React.SyntheticEvent) => void;
+  onBlur?: (e: React.SyntheticEvent) => void;
 };
 
 const findLinkEntities = (
@@ -184,16 +186,16 @@ const RichTextField: React.FC<Props> = props => {
     props.onChange(encodedData);
   };
 
-  const handleKeyCommand = (command: string) => {
+  const handleKeyCommand = (command: string): DraftHandleValue => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       onChange(newState);
-      return true;
+      return 'handled';
     }
-    return false;
+    return 'not-handled';
   };
 
-  const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
+  const mapKeyToEditorCommand = (e: React.KeyboardEvent): any => {
     if (e.keyCode === 9 /* Tab */) {
       const newEditorState = RichUtils.onTab(e, editorState, 4);
       if (newEditorState !== editorState) {
@@ -212,12 +214,12 @@ const RichTextField: React.FC<Props> = props => {
     onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
 
-  const getBlockStyle = (block: Draft.ContentBlock) => {
+  const getBlockStyle = (block: ContentBlock): string => {
     switch (block.getType()) {
       case 'blockquote':
         return 'blockquote';
       default:
-        return null;
+        return '';
     }
   };
 
@@ -498,12 +500,12 @@ const RichText = ({
 }: {
   data: string;
   edit: boolean;
-  onChange: CallableFunction;
+  onChange: (e: React.SyntheticEvent<Element, Event>) => void;
 }) =>
   edit ? (
     <RichTextField data={data} onChange={onChange} />
   ) : (
-    <RichTextRenderer data={data} />
+    RichTextRenderer({ data })
   );
 
 RichText.defaultProps = {
