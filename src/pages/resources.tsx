@@ -19,7 +19,7 @@ const StyledHero = styled.section`
   }
 `;
 
-const ResourcesPage = () => (
+const ResourcesPage: React.FC = () => (
   <Layout>
     <SEO
       title="Web Developer Resources"

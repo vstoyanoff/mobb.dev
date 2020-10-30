@@ -1,12 +1,21 @@
 import React from 'react';
 
-import RichText from '../components/rich-text';
-import Dropzone from '../components/dropzone';
+//Components
+import RichText from './rich-text';
+import Dropzone from './dropzone';
 
+//Global styled components
 import { StyledInput, StyledTextarea } from '../css/styled';
 
-const Authored = props => {
-  const handleTitle = event => {
+//Types
+import { Article } from '../types';
+type Props = {
+  data: Article;
+  setData: Function;
+};
+
+const Authored: React.FC<Props> = props => {
+  const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const url = event.target.value
       .toLowerCase()
       .replace(/\s+/g, '-') // Replace spaces with -
@@ -26,7 +35,9 @@ const Authored = props => {
       <h3>2. Upload cover photo</h3>
 
       <Dropzone
-        onUpload={file => props.setData({ ...props.data, image: file })}
+        onUpload={(file: string) =>
+          props.setData({ ...props.data, image: file })
+        }
       />
 
       <h3>3. Now make some magic</h3>
@@ -41,7 +52,7 @@ const Authored = props => {
       <StyledTextarea
         placeholder="Add description"
         value={props.data.description}
-        onChange={event =>
+        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
           props.setData({
             ...props.data,
             description: event.target.value,
@@ -52,7 +63,9 @@ const Authored = props => {
       <RichText
         edit={true}
         data={props.data.content}
-        onChange={content => props.setData({ ...props.data, content })}
+        onChange={(content: React.SyntheticEvent) =>
+          props.setData({ ...props.data, content })
+        }
       />
     </div>
   );

@@ -20,7 +20,7 @@ const StyledHero = styled.section`
   }
 `;
 
-const ToolsPage = () => (
+const ToolsPage: React.FC = () => (
   <Layout>
     <SEO
       title=" Tools for easing developers"

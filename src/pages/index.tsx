@@ -20,7 +20,7 @@ const StyledHero = styled.section`
   }
 `;
 
-const IndexPage = () => (
+const IndexPage: React.FC = () => (
   <Layout>
     <SEO
       title="Web developers space"

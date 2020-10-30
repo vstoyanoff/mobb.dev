@@ -4,44 +4,72 @@
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-const path = require(`path`);
-const fs = require(`fs`);
-const rimraf = require(`rimraf`);
+import path from 'path';
+import fs from 'fs';
+import rimraf from 'rimraf';
 
-exports.createPages = async ({ graphql, actions }) => {
+//Types
+import { GatsbyNode } from 'gatsby';
+import { Article } from './src/types';
+type QueryResult = {
+  allArticles: {
+    edges: {
+      node: Article;
+    }[];
+  };
+};
+
+export const createPages: GatsbyNode['createPages'] = async ({
+  graphql,
+  actions,
+}) => {
   const { createPage } = actions;
-  const result = await graphql(`
+  const result = await graphql<QueryResult>(`
     query {
       allArticles(sort: { fields: date, order: DESC }) {
         edges {
           node {
-            title
-            description
-            id
-            image
-            site
+            date
             type
             url
-            state
+            image
+            title
+            description
+            content
+            site
             featured
+            state
           }
         }
       }
     }
   `);
 
+  if (result.errors) {
+    throw result.errors;
+  }
+
+  if (!result.data) {
+    throw new Error('ERROR: Could not fetch posts on build');
+  }
+
   //Generate authored articles pages
-  result.data.allArticles.edges.forEach(({ node }) => {
+  result.data.allArticles.edges.forEach(({ node }: { node: Article }) => {
     if (node.type === 'authored') {
       createPage({
         path: node.url,
-        component: path.resolve(`./src/templates/article.js`),
+        component: path.resolve(`./src/templates/article.tsx`),
         context: {
+          date: node.date,
+          type: node.type,
           url: node.url,
           image: node.image,
           title: node.title,
           description: node.description,
           content: node.content,
+          site: node.site,
+          featured: node.featured,
+          state: node.state,
         },
       });
     }
@@ -49,7 +77,8 @@ exports.createPages = async ({ graphql, actions }) => {
 
   //Generate pagination files
   const articles = result.data.allArticles.edges.filter(
-    article => article.node.state === 'published' && !article.node.featured
+    ({ node }: { node: Article }) =>
+      node.state === 'published' && !node.featured
   );
   const countArticlesPerPage = 6;
   const countPages = Math.ceil(articles.length / countArticlesPerPage);
@@ -58,7 +87,7 @@ exports.createPages = async ({ graphql, actions }) => {
   rimraf.sync(dir);
   fs.mkdirSync(dir);
 
-  function createJSON(index, data) {
+  function createJSON(index: number, data: { node: Article }[]) {
     const filePath = dir + 'articles-' + index + '.json';
     const dataToSave = JSON.stringify({
       pages: countPages,

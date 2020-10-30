@@ -4,10 +4,13 @@ import Recaptcha from 'react-google-recaptcha';
 import nanoid from 'nanoid';
 import download from 'downloadjs';
 
+//Components
 import Layout from '../../components/layout';
 import LoadingOverlay from '../../components/loading-overlay';
 import ErrorOverlay from '../../components/error-overlay';
 import SEO from '../../components/seo';
+
+//Global styled components
 import {
   StyledInput,
   StyledCheckbox,
@@ -15,8 +18,18 @@ import {
   StyledButton,
 } from '../../css/styled';
 
+//Types
+import {
+  WebpackConfigGeneratorState,
+  YesNo,
+  StylesPreference,
+  HTMLPreference,
+  StylesType,
+} from '../../types';
+
 const url = 'https://webpack-config-generator.herokuapp.com';
 
+//Local styled components
 const StyledGenerator = styled.div`
   padding: 30px;
   border: 2px solid #333;
@@ -65,33 +78,33 @@ const StyledOptionsList = styled.div`
 `;
 
 const WebpackConfigGenerator = () => {
-  const [state, setState] = useState({
+  const [state, setState] = useState<WebpackConfigGeneratorState>({
     id: '',
     jsEntry: 'main',
-    processHTML: 'no',
-    htmlPreference: 'no',
-    processStyles: 'no',
-    stylesPreference: 'css-in-js',
-    stylesType: 'css',
+    processHTML: YesNo.NO,
+    htmlPreference: HTMLPreference.NO,
+    processStyles: YesNo.NO,
+    stylesPreference: StylesPreference.CSSINJS,
+    stylesType: StylesType.CSS,
     stylesEntry: 'style',
-    processImages: 'no',
+    processImages: YesNo.NO,
     resolveSize: 0,
     imageUrlResolve: false,
     imageOptimization: false,
     svgOptimization: false,
-    optimizations: 'no',
-    devServer: 'no',
+    optimizations: YesNo.NO,
+    devServer: YesNo.NO,
     splitChunks: false,
     webp: false,
     criticalCss: false,
     purgeCss: false,
   });
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const recaptchaRef = useRef(null);
+  const recaptchaRef = useRef<any>();
 
-  const handleInput = e => {
+  const handleInput = (e: React.SyntheticEvent) => {
     if (e.target.type !== 'number') {
       if (!/\w/g.test(e.target.value[e.target.value.length - 1])) {
         return;
@@ -104,28 +117,31 @@ const WebpackConfigGenerator = () => {
     });
   };
 
-  const handleRadio = e => {
+  const handleRadio = (e: React.SyntheticEvent) => {
     setState({
       ...state,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleCheckbox = e => {
+  const handleCheckbox = (e: React.SyntheticEvent) => {
     setState({
       ...state,
       [e.target.name]: e.target.checked,
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError(false);
 
       //Get recaptcha response
-      const recaptchaValue = recaptchaRef.current.getValue();
+      const recaptchaValue =
+        typeof recaptchaRef.current !== 'undefined'
+          ? recaptchaRef.current.getValue()
+          : undefined;
 
       //Send generate request
       const res = await fetch(`${url}/generate`, {
@@ -231,8 +247,8 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="html-yes"
                         name="processHTML"
-                        value="yes"
-                        checked={state.processHTML === 'yes'}
+                        value={YesNo.YES}
+                        checked={state.processHTML === YesNo.YES}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
@@ -244,15 +260,15 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="html-no"
                         name="processHTML"
-                        value="no"
-                        checked={state.processHTML === 'no'}
+                        value={YesNo.NO}
+                        checked={state.processHTML === YesNo.NO}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
                   </div>
                 </StyledQuestion>
 
-                {state.processHTML === 'yes' && (
+                {state.processHTML === YesNo.YES && (
                   <div>
                     <h4>
                       This option will process all .html files injecting .js and
@@ -272,8 +288,8 @@ const WebpackConfigGenerator = () => {
                           type="radio"
                           id="no-html-preprocessor"
                           name="htmlPreference"
-                          value="no"
-                          checked={state.htmlPreference === 'no'}
+                          value={HTMLPreference.NO}
+                          checked={state.htmlPreference === HTMLPreference.NO}
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -281,7 +297,7 @@ const WebpackConfigGenerator = () => {
                       <br />
 
                       <StyledRadiobutton>
-                        <label htmlFor="pug">
+                        <label htmlFor={HTMLPreference.PUG}>
                           Use{' '}
                           <a
                             target="_blank"
@@ -294,10 +310,10 @@ const WebpackConfigGenerator = () => {
 
                         <input
                           type="radio"
-                          id="pug"
+                          id={HTMLPreference.PUG}
                           name="htmlPreference"
-                          value="pug"
-                          checked={state.htmlPreference === 'pug'}
+                          value={HTMLPreference.PUG}
+                          checked={state.htmlPreference === HTMLPreference.PUG}
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -305,7 +321,7 @@ const WebpackConfigGenerator = () => {
                       <br />
 
                       <StyledRadiobutton>
-                        <label htmlFor="posthtml">
+                        <label htmlFor={HTMLPreference.POSTHTML}>
                           Use{' '}
                           <a
                             target="_blank"
@@ -318,10 +334,12 @@ const WebpackConfigGenerator = () => {
 
                         <input
                           type="radio"
-                          id="posthtml"
+                          id={HTMLPreference.POSTHTML}
                           name="htmlPreference"
-                          value="posthtml"
-                          checked={state.htmlPreference === 'posthtml'}
+                          value={HTMLPreference.POSTHTML}
+                          checked={
+                            state.htmlPreference === HTMLPreference.POSTHTML
+                          }
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -329,7 +347,7 @@ const WebpackConfigGenerator = () => {
                       <br />
 
                       <StyledRadiobutton>
-                        <label htmlFor="handlebars">
+                        <label htmlFor={HTMLPreference.HANDLEBARS}>
                           Use{' '}
                           <a
                             target="_blank"
@@ -342,10 +360,12 @@ const WebpackConfigGenerator = () => {
 
                         <input
                           type="radio"
-                          id="handlebars"
+                          id={HTMLPreference.HANDLEBARS}
                           name="htmlPreference"
-                          value="handlebars"
-                          checked={state.htmlPreference === 'handlebars'}
+                          value={HTMLPreference.HANDLEBARS}
+                          checked={
+                            state.htmlPreference === HTMLPreference.HANDLEBARS
+                          }
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -366,8 +386,8 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="styles-yes"
                         name="processStyles"
-                        value="yes"
-                        checked={state.processStyles === 'yes'}
+                        value={YesNo.YES}
+                        checked={state.processStyles === YesNo.YES}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
@@ -379,15 +399,15 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="styles-no"
                         name="processStyles"
-                        value="no"
-                        checked={state.processStyles === 'no'}
+                        value={YesNo.NO}
+                        checked={state.processStyles === YesNo.NO}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
                   </div>
                 </StyledQuestion>
 
-                {state.processStyles === 'yes' && (
+                {state.processStyles === YesNo.YES && (
                   <div>
                     <h4>
                       You can easily process styles either in vanilla CSS or
@@ -409,8 +429,10 @@ const WebpackConfigGenerator = () => {
                           type="radio"
                           id="styles-in-js"
                           name="stylesPreference"
-                          value="css-in-js"
-                          checked={state.stylesPreference === 'css-in-js'}
+                          value={StylesPreference.CSSINJS}
+                          checked={
+                            state.stylesPreference === StylesPreference.CSSINJS
+                          }
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -425,9 +447,10 @@ const WebpackConfigGenerator = () => {
                           type="radio"
                           id="styles-extract"
                           name="stylesPreference"
-                          value="css-in-js-separate-file"
+                          value={StylesPreference.CSSINJSSEPARATE}
                           checked={
-                            state.stylesPreference === 'css-in-js-separate-file'
+                            state.stylesPreference ===
+                            StylesPreference.CSSINJSSEPARATE
                           }
                           onChange={handleRadio}
                         />
@@ -446,14 +469,18 @@ const WebpackConfigGenerator = () => {
                           type="radio"
                           id="styles-files"
                           name="stylesPreference"
-                          value="separate-files"
-                          checked={state.stylesPreference === 'separate-files'}
+                          value={StylesPreference.CSSSEPARATEFILES}
+                          checked={
+                            state.stylesPreference ===
+                            StylesPreference.CSSSEPARATEFILES
+                          }
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
                     </StyledOptionsList>
 
-                    {state.stylesPreference === 'separate-files' && (
+                    {state.stylesPreference ===
+                      StylesPreference.CSSSEPARATEFILES && (
                       <>
                         <label htmlFor="styles-entry-name">
                           Styles entry name{' '}
@@ -488,8 +515,8 @@ const WebpackConfigGenerator = () => {
                           type="radio"
                           id="vanilla-css"
                           name="stylesType"
-                          value="css"
-                          checked={state.stylesType === 'css'}
+                          value={StylesType.CSS}
+                          checked={state.stylesType === StylesType.CSS}
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -503,8 +530,8 @@ const WebpackConfigGenerator = () => {
                           type="radio"
                           id="scss"
                           name="stylesType"
-                          value="scss"
-                          checked={state.stylesType === 'scss'}
+                          value={StylesType.SCSS}
+                          checked={state.stylesType === StylesType.SCSS}
                           onChange={handleRadio}
                         />
                       </StyledRadiobutton>
@@ -525,8 +552,8 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="images-yes"
                         name="processImages"
-                        value="yes"
-                        checked={state.processImages === 'yes'}
+                        value={YesNo.YES}
+                        checked={state.processImages === YesNo.YES}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
@@ -538,15 +565,15 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="images-no"
                         name="processImages"
-                        value="no"
-                        checked={state.processImages === 'no'}
+                        value={YesNo.NO}
+                        checked={state.processImages === YesNo.NO}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
                   </div>
                 </StyledQuestion>
 
-                {state.processImages === 'yes' && (
+                {state.processImages === YesNo.YES && (
                   <div>
                     <h4>
                       Images processing is an essential part of every setup.
@@ -657,8 +684,8 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="optimizations-yes"
                         name="optimizations"
-                        value="yes"
-                        checked={state.optimizations === 'yes'}
+                        value={YesNo.YES}
+                        checked={state.optimizations === YesNo.YES}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
@@ -670,15 +697,15 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="optimizations-no"
                         name="optimizations"
-                        value="no"
-                        checked={state.optimizations === 'no'}
+                        value={YesNo.NO}
+                        checked={state.optimizations === YesNo.NO}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
                   </div>
                 </StyledQuestion>
 
-                {state.optimizations === 'yes' && (
+                {state.optimizations === YesNo.YES && (
                   <div>
                     <h4>
                       You can set further optimizations in order to get the
@@ -703,7 +730,7 @@ const WebpackConfigGenerator = () => {
 
                       <br />
 
-                      {state.processImages === 'yes' && (
+                      {state.processImages === YesNo.YES && (
                         <>
                           <StyledCheckbox>
                             <label htmlFor="webp">
@@ -723,7 +750,7 @@ const WebpackConfigGenerator = () => {
                         </>
                       )}
 
-                      {state.processHTML === 'yes' && (
+                      {state.processHTML === YesNo.YES && (
                         <>
                           <StyledCheckbox>
                             <label htmlFor="above-the-fold">
@@ -750,7 +777,7 @@ const WebpackConfigGenerator = () => {
                         </>
                       )}
 
-                      {state.processStyles === 'yes' && (
+                      {state.processStyles === YesNo.YES && (
                         <StyledCheckbox>
                           <label htmlFor="purgeCss">
                             Remove unneccessary CSS. Useful when using CSS
@@ -783,8 +810,8 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="devserver-yes"
                         name="devServer"
-                        value="yes"
-                        checked={state.devServer === 'yes'}
+                        value={YesNo.YES}
+                        checked={state.devServer === YesNo.YES}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
@@ -796,15 +823,15 @@ const WebpackConfigGenerator = () => {
                         type="radio"
                         id="devserver-no"
                         name="devServer"
-                        value="no"
-                        checked={state.devServer === 'no'}
+                        value={YesNo.NO}
+                        checked={state.devServer === YesNo.NO}
                         onChange={handleRadio}
                       />
                     </StyledRadiobutton>
                   </div>
                 </StyledQuestion>
 
-                {state.devServer === 'yes' && (
+                {state.devServer === YesNo.YES && (
                   <div>
                     <h4>You can change the configuration in the end file.</h4>
                   </div>
@@ -812,9 +839,8 @@ const WebpackConfigGenerator = () => {
               </fieldset>
 
               <Recaptcha
-                style={{ marginBottom: 20 }}
                 ref={recaptchaRef}
-                sitekey={process.env.GATSBY_APP_SITE_RECAPTCHA_KEY}
+                sitekey={process.env.GATSBY_APP_SITE_RECAPTCHA_KEY || ''}
               />
 
               <StyledButton type="submit" disabled={loading}>

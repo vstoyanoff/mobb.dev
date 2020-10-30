@@ -135,7 +135,7 @@ const StyledListItem = styled.li`
   }
 `;
 
-const ToolsList = () => (
+const ToolsList: React.FC = () => (
   <section>
     <div className="shell">
       <StyledList>

@@ -36,7 +36,7 @@ export const StyledTextarea = styled.textarea`
   }
 `;
 
-export const StyledSelect = styled.select`
+export const StyledSelect = styled.select<{ value?: any }>`
   width: 100%;
   background-color: transparent;
   border: 2px solid #333;
@@ -198,7 +198,7 @@ export const StyledRadiobutton = styled.div`
   }
 `;
 
-export const StyledButton = styled.button`
+export const StyledButton = styled.button<{ active?: boolean }>`
   background: transparent;
   border: 2px solid #333;
   color: #333;

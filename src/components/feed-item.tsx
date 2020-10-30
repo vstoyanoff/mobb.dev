@@ -4,6 +4,14 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { highlight } from '../utils';
 
+//Types
+import { Article } from '../types';
+type Props = {
+  data: Article;
+  term?: string | undefined;
+};
+
+//Local styled components
 const StyledItem = styled.article`
   display: flex;
   position: relative;
@@ -67,7 +75,7 @@ const StyledItem = styled.article`
   }
 `;
 
-const FeedItem = ({ data, term }) => (
+const FeedItem: React.FC<Props> = ({ data, term }) => (
   <StyledItem>
     {data.image &&
       (data.type === 'external' ? (

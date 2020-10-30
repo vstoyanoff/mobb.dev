@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
+//Local styled components
 const StyledOverlay = styled.div`
   position: fixed;
   z-index: 100;
@@ -34,7 +35,13 @@ const StyledOverlay = styled.div`
   }
 `;
 
-const ErrorOverlay = ({ text, close }) => (
+const ErrorOverlay = ({
+  text,
+  close,
+}: {
+  text: string;
+  close: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}) => (
   <StyledOverlay>
     <button onClick={close} className="close">
       <FontAwesomeIcon icon={faTimesCircle} size="lg" color="#fff" />
