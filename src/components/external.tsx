@@ -22,7 +22,7 @@ const External: React.FC<Props> = props => (
       type="url"
       placeholder="Paste article url here"
       value={props.data.url}
-      onChange={(event: React.SyntheticEvent) =>
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
         props.setData({ ...props.data, url: event.target.value })
       }
     />

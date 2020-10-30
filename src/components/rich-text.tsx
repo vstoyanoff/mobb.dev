@@ -500,7 +500,7 @@ const RichText = ({
 }: {
   data: string;
   edit: boolean;
-  onChange: (e: React.SyntheticEvent<Element, Event>) => void;
+  onChange: (e: React.SyntheticEvent) => void;
 }) =>
   edit ? (
     <RichTextField data={data} onChange={onChange} />

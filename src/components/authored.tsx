@@ -15,7 +15,7 @@ type Props = {
 };
 
 const Authored: React.FC<Props> = props => {
-  const handleTitle = (event: React.SyntheticEvent) => {
+  const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const url = event.target.value
       .toLowerCase()
       .replace(/\s+/g, '-') // Replace spaces with -
@@ -52,7 +52,7 @@ const Authored: React.FC<Props> = props => {
       <StyledTextarea
         placeholder="Add description"
         value={props.data.description}
-        onChange={(event: React.SyntheticEvent) =>
+        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
           props.setData({
             ...props.data,
             description: event.target.value,
@@ -63,7 +63,7 @@ const Authored: React.FC<Props> = props => {
       <RichText
         edit={true}
         data={props.data.content}
-        onChange={(content: string) =>
+        onChange={(content: React.SyntheticEvent) =>
           props.setData({ ...props.data, content })
         }
       />

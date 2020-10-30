@@ -10,11 +10,11 @@ import Helmet from 'react-helmet';
 import { useStaticQuery, graphql } from 'gatsby';
 
 type Props = {
-  description: string;
-  lang: string;
-  meta: [];
+  description?: string;
+  lang?: string;
+  meta?: [];
   title: string;
-  image: string;
+  image?: string;
 };
 type QueryResult = {
   site: {

@@ -333,7 +333,7 @@ const Feed: React.FC = () => {
 
           <input
             type="text"
-            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setTerm(e.target.value.toLowerCase())
             }
           />
