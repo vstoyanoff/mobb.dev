@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { useStaticQuery, graphql } from 'gatsby';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 //Components
 import FeedItem from './feed-item';
 
 //Utils
-import { debounce, throttle, pipe } from '../utils';
+import { debounce, pipe } from '../utils';
 
 //Types
 import { Article } from '../types';
@@ -138,6 +140,19 @@ const StyledSearch = styled.div`
   }
 `;
 
+const StyledLoader = styled.div`
+  text-align: center;
+  margin: 20px 0;
+
+  svg {
+    color: #333;
+
+    .dark-mode & {
+      color: #fff;
+    }
+  }
+`;
+
 const Feed: React.FC = () => {
   /**
    * Query
@@ -199,16 +214,18 @@ const Feed: React.FC = () => {
   const [nextPage, setNextPage] = useState<number>(2);
   const [fetching, setFetching] = useState<boolean>(false);
 
-  const totalPages: number = Math.ceil(total.totalCount / 6);
+  const totalPages: number = Math.ceil(
+    (total.totalCount - featured.edges.length) / 6
+  );
 
   /**
    * Methods
    */
   const applyFilter = (arr: { node: Article }[]) => {
     if (filter === 'All') {
-      return arr;
+      return arr.filter(({ node }) => !node.featured);
     } else {
-      return arr.filter(({ node }) => node.site === filter);
+      return arr.filter(({ node }) => node.site === filter && !node.featured);
     }
   };
   const applyTerm = (arr: { node: Article }[]) => {
@@ -342,6 +359,12 @@ const Feed: React.FC = () => {
         {refine(articles).map((article: { node: Article }) => (
           <FeedItem key={article.node.date} data={article.node} term={term} />
         ))}
+
+        {fetching && (
+          <StyledLoader>
+            <FontAwesomeIcon icon={faSpinner} size="2x" spin />
+          </StyledLoader>
+        )}
       </div>
     </section>
   );
