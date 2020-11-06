@@ -48,10 +48,8 @@ const Article = ({ pageContext }: { pageContext: ArticleType }) => {
             )}
 
             <Description>{pageContext.description}</Description>
-
             <PublishedOn>
-              Published on{' '}
-              {new Date(pageContext.date.toString()).toLocaleDateString()}
+              Published on {new Date(pageContext.date).toLocaleDateString()}
             </PublishedOn>
           </Header>
 
