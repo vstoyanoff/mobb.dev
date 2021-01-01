@@ -44,18 +44,10 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-prefetch-google-fonts`,
+      resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [
-          {
-            family: `Titillium Web`,
-            variants: [`400`, `500`, `700`],
-          },
-          {
-            family: `Inconsolata`,
-            variants: [`400`, `700`],
-          },
-        ],
+        fonts: [`Inconsolata\:400,700`, `Titillium Web\:400,500,700`],
+        display: 'swap',
       },
     },
     {
