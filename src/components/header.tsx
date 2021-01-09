@@ -140,14 +140,6 @@ const Header: React.FC = () => (
         <OutboundLink
           target="_blank"
           rel="noopener noreferrer"
-          href="https://twitter.com/nullable_dev"
-        >
-          <FontAwesomeIcon icon={faTwitter} size="sm" />
-        </OutboundLink>
-        &nbsp;&nbsp;&nbsp;
-        <OutboundLink
-          target="_blank"
-          rel="noopener noreferrer"
           href="https://github.com/vstoyanoff"
         >
           <FontAwesomeIcon icon={faGithub} size="sm" />
