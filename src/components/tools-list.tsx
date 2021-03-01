@@ -53,6 +53,42 @@ const tools = [
     url: 'https://wweb.dev/resources/css-separator-generator',
     external: true,
   },
+  {
+    name: 'Glassmorphism CSS Effect',
+    description:
+      'Glassmorphism is a unified name for the popular Frosted Glass aesthetic. It has many names depending on the company using it, so we wanted to create a common ground for designers and developers to find related resources easier and faster.The effect is based on background blur with transparency, and uses stacked layers to show the depth and context of the interface.',
+    image: 'https://glassmorphism.com/hero.png',
+    darkImage: 'https://glassmorphism.com/hero.png',
+    url: 'https://glassmorphism.com/',
+    external: true,
+  },
+  {
+    name: 'Front-end checklist',
+    description:
+      'The Front-End Checklist is an exhaustive list of all elements you need to have / to test before launching your website / HTML page to production.',
+    image:
+      'https://raw.githubusercontent.com/thedaviddias/Front-End-Checklist/master/data/images/logo-front-end-checklist.jpg',
+    darkImage:
+      'https://raw.githubusercontent.com/thedaviddias/Front-End-Checklist/master/data/images/logo-front-end-checklist.jpg',
+    url: 'https://github.com/thedaviddias/Front-End-Checklist',
+    external: true,
+  },
+  {
+    name: 'useHooks - Easy to understand React Hook recipes',
+    description:
+      'We bring you easy to understand React Hook code recipes so you can learn how React hooks work and feel more comfortable writing your own.',
+    image:
+      'https://usehooks.com/static/og-image-2-831e08abba54e27c3949847790422bec.png',
+    darkImage:
+      'https://usehooks.com/static/og-image-2-831e08abba54e27c3949847790422bec.png',
+    url: 'https://usehooks.com/',
+    external: true,
+  },
+  {
+    name: 'On undoing, fixing, or removing commits in git',
+    url: 'https://sethrobertson.github.io/GitFixUm/fixup.html',
+    external: true,
+  },
 ];
 
 const StyledList = styled.ul`
