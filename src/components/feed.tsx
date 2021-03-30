@@ -356,9 +356,13 @@ const Feed: React.FC = () => {
           />
         </StyledSearch>
 
-        {refine(articles).map((article: { node: Article }) => (
-          <FeedItem key={article.node.date} data={article.node} term={term} />
-        ))}
+        {refine(articles).length ? (
+          refine(articles).map((article: { node: Article }) => (
+            <FeedItem key={article.node.date} data={article.node} term={term} />
+          ))
+        ) : (
+          <p style={{ textAlign: 'center' }}>No articles found...</p>
+        )}
 
         {fetching && (
           <StyledLoader>

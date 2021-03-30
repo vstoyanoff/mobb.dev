@@ -89,6 +89,13 @@ const tools = [
     url: 'https://sethrobertson.github.io/GitFixUm/fixup.html',
     external: true,
   },
+  {
+    name: '1-Line Layouts',
+    description:
+      '10 Modern CSS layout and sizing techniques that highlight just how robust and impactful a single-line of styling code can be.',
+    url: 'https://1linelayouts.glitch.me/',
+    external: true,
+  },
 ];
 
 const StyledList = styled.ul`
@@ -177,28 +184,29 @@ const ToolsList: React.FC = () => (
       <StyledList>
         {tools.map(tool => (
           <StyledListItem>
-            {tool.external ? (
-              <OutboundLink
-                className="image-wrapper"
-                target="_blank"
-                rel="noopener noreferrer"
-                href={tool.url}
-              >
-                <img className="image" src={tool.image} alt={tool.name} />
+            {tool.image &&
+              (tool.external ? (
+                <OutboundLink
+                  className="image-wrapper"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={tool.url}
+                >
+                  <img className="image" src={tool.image} alt={tool.name} />
 
-                <img
-                  className="image image--dark"
-                  src={tool.darkImage}
-                  alt={tool.name}
-                />
-              </OutboundLink>
-            ) : (
-              <Link className="image-wrapper" to={tool.url}>
-                <tool.image className="image" />
+                  <img
+                    className="image image--dark"
+                    src={tool.darkImage}
+                    alt={tool.name}
+                  />
+                </OutboundLink>
+              ) : (
+                <Link className="image-wrapper" to={tool.url}>
+                  <tool.image className="image" />
 
-                <tool.darkImage className="image image--dark" />
-              </Link>
-            )}
+                  <tool.darkImage className="image image--dark" />
+                </Link>
+              ))}
 
             <article>
               <h2>
